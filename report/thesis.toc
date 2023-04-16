@@ -1,0 +1,48 @@
+\contentsline {part}{I\hspace {1em}Introduction}{2}{}%
+\contentsline {section}{\numberline {1}Background}{3}{}%
+\contentsline {section}{\numberline {2}Problem statement}{3}{}%
+\contentsline {section}{\numberline {3}Aims and objectives}{3}{}%
+\contentsline {section}{\numberline {4}Research objects and scope}{3}{}%
+\contentsline {subsection}{\numberline {4.1}Research Objectives:}{3}{}%
+\contentsline {subsection}{\numberline {4.2}Research Scope:}{4}{}%
+\contentsline {section}{\numberline {5}Solution approach}{4}{}%
+\contentsline {section}{\numberline {6}Summary of contributions and achievements}{4}{}%
+\contentsline {section}{\numberline {7}Organization of the report}{4}{}%
+\contentsline {part}{II\hspace {1em}Content}{6}{}%
+\contentsline {chapter}{\numberline {1}Requirements and specification}{7}{}%
+\contentsline {section}{\numberline {1.1}Overall Description}{7}{}%
+\contentsline {subsection}{\numberline {1.1.1}Product Perspective}{7}{}%
+\contentsline {subsection}{\numberline {1.1.2}Product Functions}{7}{}%
+\contentsline {subsection}{\numberline {1.1.3}User Classes and Characteristics}{9}{}%
+\contentsline {subsection}{\numberline {1.1.4}Operating Environment}{10}{}%
+\contentsline {section}{\numberline {1.2}Requirements Specification}{10}{}%
+\contentsline {subsection}{\numberline {1.2.1}External Interface Requirements}{10}{}%
+\contentsline {subsection}{\numberline {1.2.2}Functional Requirement}{10}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.1}Login}{10}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.2}Sign up}{11}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.3}Log out}{12}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.4}Manage Stock}{13}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.5}Manage Products }{14}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.6}Manage Categories}{15}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.7}Create invoice}{16}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.8}Manage Invoices}{17}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.9}Manage Revenue and Expenditure}{18}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.10}Print Invoices}{19}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.11}Manage Suppliers}{20}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.12}Manage Customers}{21}{}%
+\contentsline {subsubsection}{\numberline {1.2.2.13}Manage Store}{22}{}%
+\contentsline {subsection}{\numberline {1.2.3}Nonfunctional Requirements}{23}{}%
+\contentsline {chapter}{\numberline {2}Software Design}{24}{}%
+\contentsline {section}{\numberline {2.1}Application Architecture}{24}{}%
+\contentsline {subsection}{\numberline {2.1.1}Architectural Design}{24}{}%
+\contentsline {subsection}{\numberline {2.1.2}Decomposition Description}{25}{}%
+\contentsline {section}{\numberline {2.2}Data Design}{25}{}%
+\contentsline {subsection}{\numberline {2.2.1}Data Description}{25}{}%
+\contentsline {subsubsection}{\numberline {2.2.1.1}Conceptual Data Model}{25}{}%
+\contentsline {subsubsection}{\numberline {2.2.1.2}Logical Data Model}{25}{}%
+\contentsline {subsubsection}{\numberline {2.2.1.3}Physical Data Model}{25}{}%
+\contentsline {subsection}{\numberline {2.2.2}Data Dictionary}{25}{}%
+\contentsline {section}{\numberline {2.3}Detailed Design}{25}{}%
+\contentsline {chapter}{\numberline {3}Implementation}{26}{}%
+\contentsline {chapter}{\numberline {4}Testing}{27}{}%
+\contentsline {part}{III\hspace {1em}Conclusion}{28}{}%

@@ -1,0 +1,112 @@
+\documentclass[a4paper,12pt,oneside]{report}
+%.Package
+% Vietnamese
+% \usepackage[utf8]{vietnam}
+%Page format
+\usepackage[top=3cm,inner=3.5cm,outer=2cm,bottom=3cm,headheight=120pt]{geometry}	
+\usepackage{graphicx}	                    %insert image
+\usepackage{subfiles}                       %create and includes subfiles
+\usepackage{fancyhdr}			            %create header and footer
+\usepackage{emptypage}			            %prevents page numbers and headings from appearing on empty pages.
+\usepackage{tabularx}                       %insert table
+\usepackage{pdflscape}                      %make landscape pages display as landscape( table, chart)
+\usepackage[square]{natbib}                 %provide flexible bibliography support
+\usepackage{url}                            %use to include URL
+\usepackage{longtable}                      %use for long, multi-page tables
+\usepackage{amsmath}                         %use to insert math formulas
+\usepackage{makecell}                       %used to highlight table headers
+\usepackage{float}                          %Used to set the H (here) attribute for the image
+\usepackage{fancyvrb}                        %Used for code listing
+\usepackage{parskip}						%Used to change the space inserted between paragraphs
+
+
+\graphicspath{ {images/} }                  %Declare image path
+\renewcommand\theadfont{\bfseries}          % Format for table headers
+
+\setcounter{tocdepth}{3} % Provide subsubsection numbering and appearance in table of content
+\setcounter{secnumdepth}{3}
+
+\usepackage{pgffor, ifthen}                 % use for draw line in instructor's comment
+\newcommand{\notes}[3][\empty]{
+	\noindent \vspace{15pt}\\
+	\foreach \n in {1,...,#2}{
+		\ifthenelse{
+			\equal{#1}{\empty}
+		}
+		{\rule{#3}{0.5pt}\vspace{15pt}\\}
+		{\rule{#3}{0.5pt}\vspace{15pt}\\}
+	}
+}
+\title{Grocery management application iGrocery}  	% Title of the report
+\author{Nguyen Thanh Phat}							% Author 
+
+% Apply fancy style
+\pagestyle{fancy}
+\fancyhf{}
+
+% Header and header in one side of page
+\rhead{\fontsize{10}{12} \selectfont Instructor\\Dr. Lam Nhat Khang}												% Header RH
+\lhead{\fontsize{10}{12} \selectfont Topic \\ Grocery management application - GroceryPOS}									% Header LS
+\rfoot{\fontsize{10}{12} \selectfont \thepage}																		% Footer RH
+\lfoot{\fontsize{10}{12} \selectfont Nguyen Thanh Phat - B2005853}		%Footer
+
+\begin{document}
+\subfile{cover/outer.tex}		% include file outer cover
+\subfile{cover/inner.tex}		% include file 
+
+\pagenumbering{roman}	% page numbering: i, ii, iii, iv, v,...
+
+\chapter*{Acknowledge}
+\subfile{chapters/acknowledge.tex}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\clearpage
+\pagenumbering{arabic}			% Page numbering: 1, 2, 3,...
+
+%Abstract
+\subfile{chapters/abstract}
+
+\part{Introduction}
+\subfile{chapters/introduction}
+
+\part{Content}
+%Chapter 1
+\chapter{Requirements and specification}
+\subfile{chapters/chapter01}
+% CHƯƠNG 2: THIẾT KẾ VÀ CÀI ĐẶT GIẢI PHÁP
+% SƠ ĐỒ TỔNG THỂ HỆ THỐNG
+% THIẾT KẾ THÀNH PHẦN DỮ LIỆU
+	% Sơ đồ hoạt vụ (use case diagram)
+	% Sơ đồ phân rã
+	% thiết kết dữ liệu
+		% Mô hình mực quan niệm CDM
+		% Mô hình mực vật lý PDM
+	% Xây dựng các tập thực thể về mối quan hệ
+%THIẾT KẾ GIAO DIỆN
+
+% CHƯƠNG 3: KIỂM THỬ VÀ ĐÁNH GIÁ1. GIỚI THIỆU1.1. Mục tiêu kiểm thử- Phát hiện lỗi và kiểm tra hệ thống có hoạt động đúng theo yêu cầu đã nêu ra trong đặc tả hay chưa. - Đảm bảo tính hoàn thiện của các chức năng.  - Làm tài liệu cho giai đoạn bảo trì.1.2. Phạm vi kiểm thửTạo và kiểm thử một số chức năng trong tài liệu đặc tả và tài liệu thiết kế đáp ứng đúng với yêu cầu mong đợi.2. ĐÁNH GIÁ KẾT QUẢ KIỂM THỬKết quả quá trình kiểm thử trên, hệ thống đạt được độ chính xác cao qua nhiều lần thử. Các chức năng thực hiện đúng theo mục tiêu ban đầu, truy vấn dữliệu chính xác.
+%Chapter 2
+\chapter{Software Design}
+\subfile{chapters/chapter02}
+
+%Chapter 3
+\chapter{Implementation}
+\subfile{chapters/chapter03}
+
+%Chapter 4
+\chapter{Testing}
+\subfile{chapters/chapter04}
+
+%KẾT QUẢ ĐẠT ĐƯỢC
+%HẠN CHẾ
+%HƯỚNG PHÁT TRI
+\part{Conclusion}
+
+\bibliography{mybib}{}
+\bibliographystyle{plain}
+
+  
+\end{document}
