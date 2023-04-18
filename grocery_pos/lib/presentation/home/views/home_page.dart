@@ -3,9 +3,11 @@ import 'package:grocery_pos/domain_data/authentications/repositories/repositorie
 
 class HomePage extends StatelessWidget {
   final AuthenticationRepository _authenticationRepository;
-  const HomePage(
-      {Key? key, required AuthenticationRepository authenticationRepository})
-      : _authenticationRepository = authenticationRepository,
+
+  const HomePage({
+    Key? key,
+    required AuthenticationRepository authenticationRepository,
+  })  : _authenticationRepository = authenticationRepository,
         super(key: key);
 
   Future<void> _handleLogOut() async {
@@ -23,7 +25,8 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: _handleLogOut,
               child: const Text("Log out"),
-            )
+            ),
+            const SizedBox(height: 30),
           ]),
     );
   }

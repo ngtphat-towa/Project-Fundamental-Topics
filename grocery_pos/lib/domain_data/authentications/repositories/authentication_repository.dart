@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:grocery_pos/common/models/models.dart';
 import 'package:grocery_pos/domain_data/authentications/models/models.dart';
+import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
 
 class SignUpWithEmailAndPasswordFailure implements Exception {
   /// {@macro sign_up_with_email_and_password_failure}
@@ -139,10 +141,17 @@ class AuthenticationRepository implements IAuthenticationRepository {
       {required String email, required String password}) async {
     try {
       // Login with firebase auth
-      await _firebaseAuth.signInWithEmailAndPassword(
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      final userRepository = UserRepository();
+      final UserModel? userData =
+          await userRepository.getUserByUID(userCredential.user!.uid);
+      if (userData != null) {
+        debugPrint("${userData.uid} ${userData.email}  ${userData.name}");
+      }
     } on FirebaseAuthException catch (e) {
       throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
@@ -162,8 +171,9 @@ class AuthenticationRepository implements IAuthenticationRepository {
   @override
   Future signUp({required String email, required String password}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      final UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      await UserRepository().createUser(userCredential.user!.toUserModel);
     } on FirebaseAuthException catch (e) {
       throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
@@ -174,6 +184,7 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
 extension FirebaseUsertoUser on User {
   UserModel get toUserModel {
-    return UserModel(id: uid, email: email, name: displayName, photo: photoURL);
+    return UserModel(
+        uid: uid, email: email, name: displayName, photo: photoURL);
   }
 }

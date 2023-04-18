@@ -41,7 +41,7 @@ class AuthenticationWrapper extends StatelessWidget {
             context.read<AuthenticationRepository>();
         switch (state.status) {
           case AppStatus.authenticated:
-            debugPrint(state.user.id);
+            debugPrint(state.user.uid);
             return HomePage(
               authenticationRepository: authenticationRepository,
             );
