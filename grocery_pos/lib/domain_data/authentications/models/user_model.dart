@@ -11,20 +11,20 @@ class UserModel extends Equatable {
       {required this.uid, this.email, this.phone, this.name, this.photo});
   factory UserModel.fromMap(Map<String, dynamic> data) {
     return UserModel(
-      uid: data[UserModelMapping.uidFeild],
-      email: data[UserModelMapping.emailFeild]!,
-      phone: data[UserModelMapping.phoneFeild]!,
-      name: data[UserModelMapping.nameFeild]!,
-      photo: data[UserModelMapping.photoFeild]!,
+      uid: data[UserModelMapping.uidKey],
+      email: data[UserModelMapping.emailKey] ?? '',
+      phone: data[UserModelMapping.phoneKey] ?? '',
+      name: data[UserModelMapping.nameKey] ?? '',
+      photo: data[UserModelMapping.photoKey] ?? '',
     );
   }
   toJson() {
     return {
-      UserModelMapping.uidFeild: uid,
-      UserModelMapping.emailFeild: email,
-      UserModelMapping.phoneFeild: phone,
-      UserModelMapping.nameFeild: name,
-      UserModelMapping.photoFeild: photo,
+      UserModelMapping.uidKey: uid,
+      UserModelMapping.emailKey: email,
+      UserModelMapping.phoneKey: phone,
+      UserModelMapping.nameKey: name,
+      UserModelMapping.photoKey: photo,
     };
   }
 
@@ -38,9 +38,9 @@ class UserModel extends Equatable {
 
 class UserModelMapping {
   static const collectioName = 'Users';
-  static const uidFeild = 'uid';
-  static const emailFeild = 'email';
-  static const phoneFeild = 'phone';
-  static const nameFeild = 'name';
-  static const photoFeild = 'photoURL';
+  static const uidKey = 'uid';
+  static const emailKey = 'email';
+  static const phoneKey = 'phone';
+  static const nameKey = 'name';
+  static const photoKey = 'photoURL';
 }
