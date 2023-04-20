@@ -25,7 +25,8 @@ class ProductRepository implements IProductRepository {
         .collection(UserModelMapping.collectioName)
         .doc(_userModel.uid)
         .collection(ProductModelMapping.collectionName)
-        .add(model.toJson());
+        .doc(model.id)
+        .set(model.toJson());
   }
 
   @override
