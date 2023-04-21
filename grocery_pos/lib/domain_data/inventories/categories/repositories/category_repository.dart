@@ -26,10 +26,13 @@ class CategoryRepository implements ICategoryRepository {
           .doc(_userModel.uid)
           .collection(CategoryModelMapping.collectionName)
           .get();
-      if (snapshot.docs.isEmpty) return null;
-      return snapshot.docs
-          .map((doc) => CategoryModel.fromJson(doc.data()))
-          .toList();
+      if (snapshot.docs.isNotEmpty) {
+        final models = snapshot.docs
+            .map((doc) => CategoryModel.fromJson(doc.data()))
+            .toList();
+        return models;
+      }
+      return null;
     } catch (_) {
       return null;
     }

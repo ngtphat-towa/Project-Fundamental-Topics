@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:grocery_pos/domain_data/authentications/models/user_model.dart';
 import 'package:grocery_pos/domain_data/store/store_profile_model.dart';
-
-import '../authentications/models/user_model.dart';
 
 abstract class IStoreProfileRepository {
   Future<void> createStoreProfile(StoreProfileModel model);
@@ -12,7 +11,6 @@ abstract class IStoreProfileRepository {
 class StoreProfileRepository implements IStoreProfileRepository {
   final FirebaseFirestore _firestore;
   final UserModel _userModel;
-
   StoreProfileRepository(
       {FirebaseFirestore? firestore, required UserModel userModel})
       : _firestore = firestore ?? FirebaseFirestore.instance,
@@ -38,8 +36,10 @@ class StoreProfileRepository implements IStoreProfileRepository {
           .collection(StoreProfileModelMapping.collectionName)
           .doc(StoreProfileModelMapping.documentID)
           .get();
-      if (!snapshot.exists) return null;
-      return StoreProfileModel.fromJson(snapshot.data()!);
+      if (snapshot.exists) {
+        return StoreProfileModel.fromJson(snapshot.data()!);
+      }
+      return null;
     } catch (_) {
       return null;
     }

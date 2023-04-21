@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
 class CategoryModel extends Equatable {
-  final String id;
+  final String? id;
   final String name;
   final String? description;
   final String? color;
 
   const CategoryModel({
-    required this.id,
+    this.id,
     required this.name,
     this.description,
     this.color,
@@ -45,7 +45,10 @@ class CategoryModel extends Equatable {
     );
   }
 
+  static const empty = CategoryModel(id: '', name: '');
   static const none = CategoryModel(id: '', name: 'none');
+  bool get isEmpty => this == CategoryModel.empty;
+  bool get isNotEmpty => this != CategoryModel.empty;
 
   @override
   List<Object?> get props => [id, name, description, color];
