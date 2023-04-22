@@ -5,7 +5,7 @@ import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_r
 import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
 import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
-import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/views/supplier_list_page.dart';
+import 'package:grocery_pos/presentation/contacts/customers/customer_list/views/customer_list_page.dart';
 import 'package:grocery_pos/presentation/home/widgets/custom_drawer.dart';
 
 class HomePage extends StatelessWidget {
@@ -40,6 +40,11 @@ class HomePage extends StatelessWidget {
         ),
         RepositoryProvider(
           create: (_) => SupplierRepository(
+            userModel: currentUser,
+          ),
+        ),
+        RepositoryProvider(
+          create: (_) => CustomerRepository(
             userModel: currentUser,
           ),
         ),
@@ -80,10 +85,10 @@ class _ToggleScreen extends StatelessWidget {
         /////supplier
 
         Navigator.of(context).push(
-          SupplierPage.route(context),
+          CustomerPage.route(context),
         );
       },
-      child: const Text("Go to supplier"),
+      child: const Text("Go to customer"),
     );
   }
 }

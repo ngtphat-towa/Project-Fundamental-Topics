@@ -1,4 +1,6 @@
-class Address {
+import 'package:equatable/equatable.dart';
+
+class Address extends Equatable {
   static const streetKey = 'street';
   static const cityKey = 'city';
   static const countryKey = 'country';
@@ -19,4 +21,12 @@ class Address {
         cityKey: city,
         countryKey: country,
       };
+
+  // ignore: prefer_const_constructors
+  static get empty => Address(street: '', city: '', country: '');
+
+  get full => '$street $city, ${country!}';
+
+  @override
+  List<Object?> get props => [street, city, country];
 }

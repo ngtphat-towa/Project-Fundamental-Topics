@@ -45,7 +45,6 @@ class AppThemes {
 
 // headlineMedium
   static const _headlineMedium = TextStyle(
-    fontFamily: 'Poppins',
     fontSize: 28,
     fontWeight: FontWeight.w400,
     height: 36 / 28,
@@ -53,7 +52,6 @@ class AppThemes {
 
 // headlineSmall
   static const _headlineSmall = TextStyle(
-    fontFamily: 'Poppins',
     fontSize: 24,
     fontWeight: FontWeight.w400,
     height: 32 / 24,

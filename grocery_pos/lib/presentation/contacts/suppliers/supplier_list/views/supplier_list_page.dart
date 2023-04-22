@@ -104,7 +104,7 @@ class _SearchBar extends StatelessWidget {
                     LoadSupplierListEvent(searchValue: _searchController.text));
               },
             ),
-            hintText: "eg.SL1",
+            hintText: "eg.${SupplierModelMapping.idForamt}1",
             labelText: "Search"),
         onSubmitted: (value) {
           BlocProvider.of<SupplierListBloc>(context)
