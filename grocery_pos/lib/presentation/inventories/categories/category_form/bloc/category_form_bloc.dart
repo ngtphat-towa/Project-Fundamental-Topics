@@ -15,6 +15,7 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
     on<AddCategoryEvent>(_addCategoryEvent);
     on<UpdateCategoryEvent>(_updateCategoryEvent);
     on<LoadToEditCategoryEvent>(_loadToEditCategoryEvent);
+    on<BackCategroyFormEvent>(_backCategroyFormEvent);
   }
 
   Future<void> _updateCategoryEvent(
@@ -44,6 +45,7 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
 
   Future<void> _loadToEditCategoryEvent(
       LoadToEditCategoryEvent event, Emitter<CategoryFormState> emit) async {
+    emit(CategoryFormLoadingState());
     try {
       if (event.type == CategoryFormType.edit) {
         final latestModel =
@@ -56,5 +58,10 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
     } catch (e) {
       emit(CategoryFormErrorState(message: e.toString()));
     }
+  }
+
+  Future<void> _backCategroyFormEvent(
+      BackCategroyFormEvent event, Emitter<CategoryFormState> emit) async {
+    emit(CategoryFormInitial());
   }
 }

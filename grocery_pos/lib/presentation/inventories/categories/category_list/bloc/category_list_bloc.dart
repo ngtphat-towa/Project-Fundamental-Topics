@@ -23,16 +23,16 @@ class CategoryListBloc extends Bloc<CategoryListEvent, CategoryListState> {
     LoadCategoryListEvent event,
     Emitter<CategoryListState> emit,
   ) async {
-    emit(CategoryListLoading());
+    emit(CategoryListLoadingState());
     try {
       final List<CategoryModel>? categoires =
           await categoryRepository.getAllCategories();
       if (categoires != null) {
-        emit(const CategoryListError("The category list is empty!"));
+        emit(const CategoryListErrorState("The category list is empty!"));
       }
-      emit(CategoryListLoaded(categories: categoires));
+      emit(CategoryListLoadedState(categories: categoires));
     } catch (e) {
-      emit(CategoryListError(e.toString()));
+      emit(CategoryListErrorState(e.toString()));
     }
   }
 
@@ -43,11 +43,11 @@ class CategoryListBloc extends Bloc<CategoryListEvent, CategoryListState> {
       final List<CategoryModel>? categoires =
           await categoryRepository.getAllCategories();
       if (categoires != null) {
-        emit(const CategoryListError("The category list is empty!"));
+        emit(const CategoryListErrorState("The category list is empty!"));
       }
-      emit(CategoryListLoaded(categories: categoires));
+      emit(CategoryListLoadedState(categories: categoires));
     } catch (e) {
-      emit(CategoryListError(e.toString()));
+      emit(CategoryListErrorState(e.toString()));
     }
   }
 }

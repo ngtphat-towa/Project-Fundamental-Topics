@@ -37,16 +37,17 @@ class CategoryPage extends StatelessWidget {
         )
       ],
       child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Category Entry"),
-            actions: [
-              _AddCategoryButton(),
-            ],
-          ),
-          body: const Padding(
-            padding: EdgeInsets.all(10),
-            child: CategoryListForm(),
-          )),
+        appBar: AppBar(
+          title: const Text("Category Entry"),
+          actions: [
+            _AddCategoryButton(),
+          ],
+        ),
+        body: const Padding(
+          padding: EdgeInsets.all(10),
+          child: CategoryListForm(),
+        ),
+      ),
     );
   }
 }

@@ -33,4 +33,4 @@ class UpdateCategoryEvent extends CategoryFormEvent {
   List<Object?> get props => [model];
 }
 
-class BackCategroyEvent extends CategoryFormEvent {}
+class BackCategroyFormEvent extends CategoryFormEvent {}

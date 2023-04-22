@@ -9,21 +9,21 @@ abstract class CategoryListState extends Equatable {
 
 class CategoryListInitial extends CategoryListState {}
 
-class CategoryListLoading extends CategoryListState {}
+class CategoryListLoadingState extends CategoryListState {}
 
-class CategoryListLoaded extends CategoryListState {
+class CategoryListLoadedState extends CategoryListState {
   final List<CategoryModel>? categories;
 
-  const CategoryListLoaded({this.categories});
+  const CategoryListLoadedState({this.categories});
 
   @override
   List<Object?> get props => [categories];
 }
 
-class CategoryListError extends CategoryListState {
+class CategoryListErrorState extends CategoryListState {
   final String? message;
 
-  const CategoryListError(this.message);
+  const CategoryListErrorState(this.message);
   @override
   List<Object?> get props => [message];
 }

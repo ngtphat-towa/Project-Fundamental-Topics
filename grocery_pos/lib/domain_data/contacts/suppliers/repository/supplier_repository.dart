@@ -54,10 +54,15 @@ class SupplierRepository implements ISupplierRepository {
           .doc(_userModel.uid)
           .collection(SupplierModelMapping.collectionName)
           .get();
-      if (snapshot.docs.isEmpty) return null;
-      return snapshot.docs
-          .map((doc) => SupplierModel.fromJson(doc.data()))
-          .toList();
+      if (snapshot.docs.isNotEmpty) {
+        final models = snapshot.docs
+            .map(
+              (doc) => SupplierModel.fromJson(doc.data()),
+            )
+            .toList();
+        return models;
+      }
+      return null;
     } catch (_) {
       return null;
     }
@@ -93,27 +98,35 @@ class SupplierRepository implements ISupplierRepository {
 
   @override
   Future<String> getNewSupplierID() async {
-    final snapshot = await _firestore
-        .collection(UserModelMapping.collectioName)
-        .doc(_userModel.uid)
-        .collection(SupplierModelMapping.collectionName)
-        .orderBy(SupplierModelMapping.idKey, descending: true)
-        .limit(1)
-        .get();
+    try {
+      final snapshot = await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(SupplierModelMapping.collectionName)
+          .orderBy(SupplierModelMapping.idKey, descending: true)
+          .limit(1)
+          .get();
 
-    // Find the maximum numeric value of the document IDs
+      // Find the maximum numeric value of the document IDs
 
-    // int maxDocId = snapshot.docs.isNotEmpty
-    //     ? snapshot.docs.fold<int>(0, (maxId, doc) {
-    //         final docIdStr = doc.id.replaceFirst('SL', '');
-    //         final docIdNum = int.tryParse(docIdStr) ?? 0;
-    //         return max(maxId, docIdNum);
-    //       })
-    //     : 0;
-    if (snapshot.docs.isEmpty) return 'SL1';
-    final docIdStr = snapshot.docs.single.id.replaceFirst('C', '');
-    final maxDocId = int.tryParse(docIdStr) ?? 0;
-    // Generate a new document ID
-    return 'SL${maxDocId + 1}';
+      // int maxDocId = snapshot.docs.isNotEmpty
+      //     ? snapshot.docs.fold<int>(0, (maxId, doc) {
+      //         final docIdStr = doc.id.replaceFirst('SL', '');
+      //         final docIdNum = int.tryParse(docIdStr) ?? 0;
+      //         return max(maxId, docIdNum);
+      //       })
+      //     : 0;
+      if (snapshot.docs.isNotEmpty) {
+        final docIdStr = snapshot.docs.single.id
+            .replaceFirst(SupplierModelMapping.idForamt, '');
+        final maxDocId = int.tryParse(docIdStr) ?? 0;
+        // Generate a new document ID
+        return SupplierModelMapping.idForamt + (maxDocId + 1).toString();
+      }
+
+      return 'SL1';
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
   }
 }

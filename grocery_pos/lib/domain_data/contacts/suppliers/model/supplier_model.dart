@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:grocery_pos/common/models/models.dart';
 
 class SupplierModel extends Equatable {
-  final String id;
+  final String? id;
   final String name;
   final String? email;
   final String? phone;
@@ -10,7 +10,7 @@ class SupplierModel extends Equatable {
   final Address? address;
 
   const SupplierModel(
-      {required this.id,
+      {this.id,
       required this.name,
       this.email,
       this.phone,
@@ -35,9 +35,38 @@ class SupplierModel extends Equatable {
         SupplierModelMapping.descriptionKey: description,
         SupplierModelMapping.addressKey: address?.toJson(),
       };
+  SupplierModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? phone,
+    String? description,
+    Address? address,
+  }) {
+    return SupplierModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      description: description ?? this.description,
+      address: address ?? this.address,
+    );
+  }
 
+  static get empty => const SupplierModel(
+        id: '',
+        name: '',
+        email: '',
+        phone: '',
+        description: '',
+      );
+  static get none => const SupplierModel(name: 'none');
+
+  bool get isEmpty => this == empty;
+
+  bool get isNotEmpty => !isEmpty;
   @override
-  List<Object?> get props => [id, name, phone, address, description];
+  List<Object?> get props => [id, name, email, phone, address, description];
 }
 
 class SupplierModelMapping {

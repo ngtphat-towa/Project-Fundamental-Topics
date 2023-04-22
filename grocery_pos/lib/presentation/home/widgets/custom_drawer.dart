@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_pos/common/themes/colors.dart';
 import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
 import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
+import 'package:grocery_pos/presentation/inventories/categories/category_list/views/category_list_page.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
   const CustomNavigationDrawer({
@@ -49,6 +50,11 @@ class CustomNavigationDrawer extends StatelessWidget {
               },
             ),
           ),
+          ListTile(
+            leading: const Icon(Icons.store_mall_directory),
+            title: const Text('Store Profile'),
+            onTap: () {},
+          ),
           DrawerExpansionTitle(
               title: "Point Of Sales", nagivigates: posNavigators(context)),
           DrawerExpansionTitle(
@@ -80,20 +86,11 @@ class CustomNavigationDrawer extends StatelessWidget {
   List<Widget> contactNavigators(BuildContext context) {
     return [
       ListTile(
-        title: const Text('Add new suppliers'),
+        title: const Text('Suppliers'),
         onTap: () {},
       ),
       ListTile(
-        title: const Text('View suppliers list'),
-        onTap: () {},
-      ),
-      const Divider(thickness: 1.0),
-      ListTile(
-        title: const Text('Add new customer'),
-        onTap: () {},
-      ),
-      ListTile(
-        title: const Text('View customer list'),
+        title: const Text('Customers'),
         onTap: () {},
       ),
     ];
@@ -106,21 +103,17 @@ class CustomNavigationDrawer extends StatelessWidget {
         onTap: () {},
       ),
       ListTile(
-        title: const Text('Add new product'),
+        title: const Text('Products'),
         onTap: () {},
       ),
+      const Divider(thickness: 1),
       ListTile(
-        title: const Text('View product list'),
-        onTap: () {},
-      ),
-      const Divider(thickness: 1.0),
-      ListTile(
-        title: const Text('Add new category'),
-        onTap: () {},
-      ),
-      ListTile(
-        title: const Text('View category list'),
-        onTap: () {},
+        title: const Text('Categories'),
+        onTap: () {
+          Navigator.of(context).push(
+            CategoryPage.route(context),
+          );
+        },
       ),
     ];
   }

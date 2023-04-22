@@ -24,14 +24,14 @@ class _CategoryListFormState extends State<CategoryListForm> {
   Widget build(BuildContext context) {
     return BlocConsumer<CategoryListBloc, CategoryListState>(
       listener: (context, state) {
-        if (state is CategoryListLoading) {
+        if (state is CategoryListLoadingState) {
           debugPrint("Loading");
         }
       },
       builder: (context, state) {
-        if (state is CategoryListLoading) {
+        if (state is CategoryListLoadingState) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is CategoryListLoaded) {
+        } else if (state is CategoryListLoadedState) {
           return ListView.builder(
             itemCount: state.categories!.length,
             itemBuilder: (context, index) {
@@ -49,7 +49,6 @@ class _CategoryListFormState extends State<CategoryListForm> {
 
 class _CategoryCard extends StatelessWidget {
   const _CategoryCard({
-    super.key,
     required this.category,
   });
 

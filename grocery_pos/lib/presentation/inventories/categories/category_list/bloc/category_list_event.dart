@@ -23,5 +23,3 @@ class DeleteCategoryEvent extends CategoryListEvent {
   @override
   List<Object?> get props => [model];
 }
-
-class CancelModifyCategoryEvent extends CategoryListEvent {}
