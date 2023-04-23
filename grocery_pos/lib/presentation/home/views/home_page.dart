@@ -4,9 +4,10 @@ import 'package:grocery_pos/domain_data/authentications/repositories/repositorie
 import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_repository.dart';
 import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
+import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
 import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_list/views/customer_list_page.dart';
 import 'package:grocery_pos/presentation/home/widgets/custom_drawer.dart';
+import 'package:grocery_pos/presentation/inventories/products/product_list/views/product_list_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -48,6 +49,11 @@ class HomePage extends StatelessWidget {
             userModel: currentUser,
           ),
         ),
+        RepositoryProvider(
+          create: (_) => ProductRepository(
+            userModel: currentUser,
+          ),
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(title: const Text("Home Page")),
@@ -83,9 +89,12 @@ class _ToggleScreen extends StatelessWidget {
         //   CategoryPage.route(context),
         // );
         /////supplier
-
+        //Customer
+        // Navigator.of(context).push(
+        //   CustomerPage.route(context),
+        // );
         Navigator.of(context).push(
-          CustomerPage.route(context),
+          ProductPage.route(context),
         );
       },
       child: const Text("Go to customer"),

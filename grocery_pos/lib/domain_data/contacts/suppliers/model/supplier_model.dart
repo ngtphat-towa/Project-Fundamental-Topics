@@ -17,15 +17,24 @@ class SupplierModel extends Equatable {
       this.description,
       this.address});
 
-  SupplierModel.fromJson(Map<String, dynamic> json)
-      : id = json[SupplierModelMapping.idKey],
-        name = json[SupplierModelMapping.nameKey],
-        email = json[SupplierModelMapping.emailKey],
-        phone = json[SupplierModelMapping.phoneKey],
-        description = json[SupplierModelMapping.descriptionKey],
-        address = json[SupplierModelMapping.addressKey] != null
+  factory SupplierModel.fromJson(Map<String, dynamic> json) {
+    return SupplierModel(
+        id: json[SupplierModelMapping.idKey],
+        name: json[SupplierModelMapping.nameKey],
+        email: json[SupplierModelMapping.emailKey],
+        phone: json[SupplierModelMapping.phoneKey],
+        description: json[SupplierModelMapping.descriptionKey],
+        address: json[SupplierModelMapping.addressKey] != null
             ? Address.fromJson(json[SupplierModelMapping.addressKey])
-            : null;
+            : null);
+  }
+
+  factory SupplierModel.fromProductJson(Map<String, dynamic> json) {
+    return SupplierModel(
+      id: json[SupplierModelMapping.idKey],
+      name: json[SupplierModelMapping.nameKey],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         SupplierModelMapping.idKey: id,
@@ -34,6 +43,11 @@ class SupplierModel extends Equatable {
         SupplierModelMapping.phoneKey: phone,
         SupplierModelMapping.descriptionKey: description,
         SupplierModelMapping.addressKey: address?.toJson(),
+      };
+
+  Map<String, dynamic> toProductJson() => {
+        SupplierModelMapping.idKey: id,
+        SupplierModelMapping.nameKey: name,
       };
   SupplierModel copyWith({
     String? id,
@@ -56,9 +70,6 @@ class SupplierModel extends Equatable {
   static get empty => const SupplierModel(
         id: '',
         name: '',
-        email: '',
-        phone: '',
-        description: '',
       );
   static get none => const SupplierModel(name: 'none');
 
@@ -71,7 +82,7 @@ class SupplierModel extends Equatable {
 
 class SupplierModelMapping {
   static const collectionName = 'Suppliers';
-  static const idForamt = 'SL';
+  static const idFormat = 'SL';
   static const idKey = 'id';
   static const nameKey = 'name';
   static const emailKey = 'email';

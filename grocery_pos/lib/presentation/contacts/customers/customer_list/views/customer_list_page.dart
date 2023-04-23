@@ -102,7 +102,7 @@ class _SearchBar extends StatelessWidget {
                     LoadCustomerListEvent(searchValue: _searchController.text));
               },
             ),
-            hintText: "eg.${CustomerModelMapping.idForamt}1",
+            hintText: "eg.${CustomerModelMapping.idFormat}1",
             labelText: "Search"),
         onSubmitted: (value) {
           BlocProvider.of<CustomerListBloc>(context)

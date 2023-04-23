@@ -17,7 +17,7 @@ class ProductModel extends Equatable {
   final SupplierModel? supplier;
   final CategoryModel? category;
   final String? photoURL;
-  final bool? isInventoryEnable;
+  // final bool? isInventoryEnable;
 
   const ProductModel({
     this.id,
@@ -29,37 +29,39 @@ class ProductModel extends Equatable {
     this.supplier,
     this.category,
     this.photoURL,
-    this.isInventoryEnable,
+    // this.isInventoryEnable,
   });
 
   Map<String, dynamic> toJson() => {
-        ProductModelMapping.idKeyKey: id,
+        ProductModelMapping.idKey: id,
         ProductModelMapping.nameKey: name,
         ProductModelMapping.measureUnitKey: measureUnit,
         ProductModelMapping.unitPriceKey: unitPrice,
         ProductModelMapping.quantityKey: quantity.toJson(),
         ProductModelMapping.barcodeKey: barcode,
-        ProductModelMapping.supplierKey: supplier?.toJson(),
-        ProductModelMapping.categoryKey: category?.toJson(),
+        ProductModelMapping.supplierKey: supplier?.toProductJson(),
+        ProductModelMapping.categoryKey: category?.toProductJson(),
         ProductModelMapping.photoURLKey: photoURL,
-        ProductModelMapping.isInventoryEnableKey: isInventoryEnable,
+        // ProductModelMapping.isInventoryEnableKey: isInventoryEnable,
       };
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-        id: json[ProductModelMapping.idKeyKey],
+        id: json[ProductModelMapping.idKey],
         name: json[ProductModelMapping.nameKey],
         measureUnit: json[ProductModelMapping.measureUnitKey],
         unitPrice: json[ProductModelMapping.unitPriceKey],
         quantity: Quantity.fromJson(json[ProductModelMapping.quantityKey]),
         barcode: json[ProductModelMapping.barcodeKey],
         supplier: json[ProductModelMapping.supplierKey] != null
-            ? SupplierModel.fromJson(json[ProductModelMapping.supplierKey])
+            ? SupplierModel.fromProductJson(
+                json[ProductModelMapping.supplierKey])
             : null,
         category: json[ProductModelMapping.categoryKey] != null
-            ? CategoryModel.fromJson(json[ProductModelMapping.categoryKey])
+            ? CategoryModel.fromProductJson(
+                json[ProductModelMapping.categoryKey])
             : null,
         photoURL: json[ProductModelMapping.photoURLKey],
-        isInventoryEnable: json[ProductModelMapping.isInventoryEnableKey],
+        // isInventoryEnable: json[ProductModelMapping.isInventoryEnableKey],
       );
 
   ProductModel copyWith({
@@ -84,9 +86,23 @@ class ProductModel extends Equatable {
         supplier: supplier ?? this.supplier,
         category: category ?? this.category,
         photoURL: photoURL ?? this.photoURL,
-        isInventoryEnable: isInventoryEnable ?? this.isInventoryEnable,
+        // isInventoryEnable: isInventoryEnable ?? this.isInventoryEnable,
       );
+  static get empty => ProductModel(
+        id: '',
+        name: '',
+        measureUnit: '',
+        unitPrice: 0.0,
+        quantity: Quantity.empty,
+        barcode: '',
+        supplier: SupplierModel.empty,
+        category: CategoryModel.empty,
+        photoURL: '',
+        // isInventoryEnable: false,
+      );
+  bool get isEmpty => this == empty;
 
+  bool get isNotEmpty => !isEmpty;
   @override
   List<Object?> get props => [
         id,
@@ -98,7 +114,7 @@ class ProductModel extends Equatable {
         supplier,
         category,
         photoURL,
-        isInventoryEnable,
+        // isInventoryEnable,
       ];
 }
 
@@ -106,7 +122,7 @@ class ProductModelMapping {
   //required
   static const collectionName = "Products";
   static const idFormat = "P";
-  static const idKeyKey = 'id';
+  static const idKey = 'id';
   static const nameKey = 'name';
   //nees
   static const measureUnitKey = 'measureUnit';
@@ -117,5 +133,5 @@ class ProductModelMapping {
   static const supplierKey = 'supplier';
   static const categoryKey = 'category';
   static const photoURLKey = 'photoURL';
-  static const isInventoryEnableKey = 'isInventoryEnable';
+  // static const isInventoryEnableKey = 'isInventoryEnable';
 }

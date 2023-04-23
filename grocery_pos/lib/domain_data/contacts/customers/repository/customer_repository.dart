@@ -118,10 +118,10 @@ class CustomerRepository implements ICustomerRepository {
       //     : 0;
       if (snapshot.docs.isNotEmpty) {
         final docIdStr = snapshot.docs.single.id
-            .replaceFirst(CustomerModelMapping.idForamt, '');
+            .replaceFirst(CustomerModelMapping.idFormat, '');
         final maxDocId = int.tryParse(docIdStr) ?? 0;
         // Generate a new document ID
-        return CustomerModelMapping.idForamt + (maxDocId + 1).toString();
+        return CustomerModelMapping.idFormat + (maxDocId + 1).toString();
       }
 
       return 'SL1';

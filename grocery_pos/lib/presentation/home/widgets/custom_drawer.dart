@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_pos/common/themes/colors.dart';
 import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
 import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
+import 'package:grocery_pos/presentation/contacts/customers/customer_list/views/customer_list_page.dart';
+import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/views/supplier_list_page.dart';
 import 'package:grocery_pos/presentation/inventories/categories/category_list/views/category_list_page.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
@@ -87,11 +89,19 @@ class CustomNavigationDrawer extends StatelessWidget {
     return [
       ListTile(
         title: const Text('Suppliers'),
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(
+            SupplierPage.route(context),
+          );
+        },
       ),
       ListTile(
         title: const Text('Customers'),
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(
+            CustomerPage.route(context),
+          );
+        },
       ),
     ];
   }

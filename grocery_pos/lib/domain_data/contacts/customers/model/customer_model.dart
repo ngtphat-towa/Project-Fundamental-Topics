@@ -71,7 +71,7 @@ class CustomerModel extends Equatable {
 
 class CustomerModelMapping {
   static const collectionName = 'Customers';
-  static const idForamt = 'SL';
+  static const idFormat = 'SL';
   static const idKey = 'id';
   static const nameKey = 'name';
   static const emailKey = 'email';

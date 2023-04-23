@@ -20,7 +20,7 @@ class Quantity extends Equatable {
         sku: sku ?? this.sku,
         soldUnit: soldUnit ?? this.soldUnit,
       );
-
+  static get empty => const Quantity(sku: 0.0, soldUnit: 0.0);
   @override
   List<Object?> get props => [sku, soldUnit];
 }

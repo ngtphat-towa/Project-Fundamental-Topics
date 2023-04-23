@@ -21,6 +21,12 @@ class CategoryModel extends Equatable {
       color: json[CategoryModelMapping.colorKey] ?? "",
     );
   }
+  factory CategoryModel.fromProductJson(Map<String, dynamic> json) {
+    return CategoryModel(
+      id: json[CategoryModelMapping.idKey],
+      name: json[CategoryModelMapping.nameKey],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -28,6 +34,13 @@ class CategoryModel extends Equatable {
       CategoryModelMapping.nameKey: name,
       CategoryModelMapping.descriptionKey: description,
       CategoryModelMapping.colorKey: color,
+    };
+  }
+
+  Map<String, dynamic> toProductJson() {
+    return {
+      CategoryModelMapping.idKey: id,
+      CategoryModelMapping.nameKey: name,
     };
   }
 

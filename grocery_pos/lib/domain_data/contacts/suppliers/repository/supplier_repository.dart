@@ -10,6 +10,7 @@ abstract class ISupplierRepository {
   Future<String> getNewSupplierID();
   Future<SupplierModel?> getSupplierByID(String id);
   Future<List<SupplierModel>?> getAllSuppliers();
+  Future<List<SupplierModel>?> getAllSupplierNames();
 }
 
 class SupplierRepository implements ISupplierRepository {
@@ -118,13 +119,35 @@ class SupplierRepository implements ISupplierRepository {
       //     : 0;
       if (snapshot.docs.isNotEmpty) {
         final docIdStr = snapshot.docs.single.id
-            .replaceFirst(SupplierModelMapping.idForamt, '');
+            .replaceFirst(SupplierModelMapping.idFormat, '');
         final maxDocId = int.tryParse(docIdStr) ?? 0;
         // Generate a new document ID
-        return SupplierModelMapping.idForamt + (maxDocId + 1).toString();
+        return SupplierModelMapping.idFormat + (maxDocId + 1).toString();
       }
 
       return 'SL1';
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<List<SupplierModel>?> getAllSupplierNames() async {
+    try {
+      final snapshot = await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(SupplierModelMapping.collectionName)
+          .get();
+      if (snapshot.docs.isNotEmpty) {
+        final models = snapshot.docs
+            .map(
+              (doc) => SupplierModel.fromProductJson(doc.data()),
+            )
+            .toList();
+        return models;
+      }
+      return null;
     } on Exception catch (e) {
       throw Exception(e.toString());
     }

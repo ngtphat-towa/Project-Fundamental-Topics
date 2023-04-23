@@ -8,6 +8,7 @@ abstract class ICategoryRepository {
   Future<CategoryModel?> getCategoryByID(String id);
   Future<List<CategoryModel>?> getAllCategories();
   Future<String> getNewCategoryID();
+  Future<List<CategoryModel>?> getAllCategoryNames();
 }
 
 class CategoryRepository implements ICategoryRepository {
@@ -33,8 +34,28 @@ class CategoryRepository implements ICategoryRepository {
         return models;
       }
       return null;
-    } catch (_) {
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<List<CategoryModel>?> getAllCategoryNames() async {
+    try {
+      final snapshot = await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(CategoryModelMapping.collectionName)
+          .get();
+      if (snapshot.docs.isNotEmpty) {
+        final models = snapshot.docs
+            .map((doc) => CategoryModel.fromProductJson(doc.data()))
+            .toList();
+        return models;
+      }
       return null;
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 

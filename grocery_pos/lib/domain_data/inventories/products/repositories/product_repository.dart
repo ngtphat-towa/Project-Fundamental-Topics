@@ -5,6 +5,7 @@ import 'package:grocery_pos/domain_data/inventories/stocks/models/quantity_model
 
 abstract class IProductRepository {
   Future<void> createProduct(ProductModel model);
+  Future<String> getNewProductID();
   Future<ProductModel?> getProductByID(String id);
   Future<Quantity?> getProductQuantityByID(String id);
   Future<List<ProductModel>?> getAllProducts();
@@ -17,7 +18,10 @@ class ProductRepository implements IProductRepository {
   final FirebaseFirestore _firestore;
   final UserModel _userModel;
 
-  ProductRepository(this._firestore, this._userModel);
+  ProductRepository(
+      {FirebaseFirestore? firestore, required UserModel userModel})
+      : _firestore = firestore ?? FirebaseFirestore.instance,
+        _userModel = userModel;
 
   @override
   Future<void> createProduct(ProductModel model) async {
@@ -65,12 +69,14 @@ class ProductRepository implements IProductRepository {
           .doc(_userModel.uid)
           .collection(ProductModelMapping.collectionName)
           .get();
-      if (querySnapshot.docs.isEmpty) return null;
-      return querySnapshot.docs
-          .map((doc) => ProductModel.fromJson(doc.data()))
-          .toList();
-    } catch (_) {
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs
+            .map((doc) => ProductModel.fromJson(doc.data()))
+            .toList();
+      }
       return null;
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 
@@ -106,5 +112,39 @@ class ProductRepository implements IProductRepository {
         .collection(ProductModelMapping.collectionName)
         .doc(id)
         .update({ProductModelMapping.quantityKey: quantity.toJson()});
+  }
+
+  @override
+  Future<String> getNewProductID() async {
+    try {
+      final snapshot = await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(ProductModelMapping.collectionName)
+          .orderBy(ProductModelMapping.idKey, descending: true)
+          .limit(1)
+          .get();
+
+      // Find the maximum numeric value of the document IDs
+
+      // int maxDocId = snapshot.docs.isNotEmpty
+      //     ? snapshot.docs.fold<int>(0, (maxId, doc) {
+      //         final docIdStr = doc.id.replaceFirst('SL', '');
+      //         final docIdNum = int.tryParse(docIdStr) ?? 0;
+      //         return max(maxId, docIdNum);
+      //       })
+      //     : 0;
+      if (snapshot.docs.isNotEmpty) {
+        final docIdStr = snapshot.docs.single.id
+            .replaceFirst(ProductModelMapping.idFormat, '');
+        final maxDocId = int.tryParse(docIdStr) ?? 0;
+        // Generate a new document ID
+        return ProductModelMapping.idFormat + (maxDocId + 1).toString();
+      }
+
+      return 'SL1';
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
   }
 }
