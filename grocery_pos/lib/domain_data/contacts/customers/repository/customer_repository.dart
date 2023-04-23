@@ -10,6 +10,7 @@ abstract class ICustomerRepository {
   Future<String> getNewCustomerID();
   Future<CustomerModel?> getCustomerByID(String id);
   Future<List<CustomerModel>?> getAllCustomers();
+  Future<List<CustomerModel>?> getAllCustomerNames();
 }
 
 class CustomerRepository implements ICustomerRepository {
@@ -32,6 +33,28 @@ class CustomerRepository implements ICustomerRepository {
           .doc(model.id)
           .set(model.toJson());
     } catch (_) {}
+  }
+
+  @override
+  Future<List<CustomerModel>?> getAllCustomerNames() async {
+    try {
+      final snapshot = await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(CustomerModelMapping.collectionName)
+          .get();
+      if (snapshot.docs.isNotEmpty) {
+        final models = snapshot.docs
+            .map(
+              (doc) => CustomerModel.fromInvoiceJson(doc.data()),
+            )
+            .toList();
+        return models;
+      }
+      return null;
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override

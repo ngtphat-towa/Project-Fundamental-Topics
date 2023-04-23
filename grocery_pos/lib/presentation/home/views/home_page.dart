@@ -5,9 +5,10 @@ import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_r
 import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
+import 'package:grocery_pos/domain_data/pos/invoices/repositories/invoice_repository.dart';
 import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
 import 'package:grocery_pos/presentation/home/widgets/custom_drawer.dart';
-import 'package:grocery_pos/presentation/inventories/products/product_list/views/product_list_page.dart';
+import 'package:grocery_pos/presentation/invoices/invoice_list/views/invoice_list_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -45,12 +46,12 @@ class HomePage extends StatelessWidget {
           ),
         ),
         RepositoryProvider(
-          create: (_) => CustomerRepository(
+          create: (_) => ProductRepository(
             userModel: currentUser,
           ),
         ),
         RepositoryProvider(
-          create: (_) => ProductRepository(
+          create: (_) => InvoiceRepository(
             userModel: currentUser,
           ),
         ),
@@ -93,11 +94,14 @@ class _ToggleScreen extends StatelessWidget {
         // Navigator.of(context).push(
         //   CustomerPage.route(context),
         // );
+        // Navigator.of(context).push(
+        //   ProductPage.route(context),
+        // );
         Navigator.of(context).push(
-          ProductPage.route(context),
+          InvoicePage.route(context),
         );
       },
-      child: const Text("Go to customer"),
+      child: const Text("Go to invoice"),
     );
   }
 }

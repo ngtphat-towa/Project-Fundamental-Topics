@@ -39,12 +39,8 @@ class CategoryListBloc extends Bloc<CategoryListEvent, CategoryListState> {
   Future<void> _deleteCategoryEvent(
       DeleteCategoryEvent event, Emitter<CategoryListState> emit) async {
     try {
-      //TODO: implemnt this
-      final List<CategoryModel>? categoires =
-          await categoryRepository.getAllCategories();
-      if (categoires != null) {
-        emit(const CategoryListErrorState("The category list is empty!"));
-      }
+      await categoryRepository.deleteCategory(event.model);
+      final categoires = await categoryRepository.getAllCategories();
       emit(CategoryListLoadedState(categories: categoires));
     } catch (e) {
       emit(CategoryListErrorState(e.toString()));

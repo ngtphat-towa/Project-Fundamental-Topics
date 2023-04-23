@@ -11,7 +11,7 @@ class ProductModel extends Equatable {
   // needs
   final String measureUnit;
   final double unitPrice;
-  final Quantity quantity;
+  final Quantity? quantity;
   //metadata
   final String? barcode;
   final SupplierModel? supplier;
@@ -24,7 +24,7 @@ class ProductModel extends Equatable {
     required this.name,
     required this.measureUnit,
     required this.unitPrice,
-    required this.quantity,
+    this.quantity,
     this.barcode,
     this.supplier,
     this.category,
@@ -37,14 +37,20 @@ class ProductModel extends Equatable {
         ProductModelMapping.nameKey: name,
         ProductModelMapping.measureUnitKey: measureUnit,
         ProductModelMapping.unitPriceKey: unitPrice,
-        ProductModelMapping.quantityKey: quantity.toJson(),
+        ProductModelMapping.quantityKey: quantity!.toJson(),
         ProductModelMapping.barcodeKey: barcode,
         ProductModelMapping.supplierKey: supplier?.toProductJson(),
         ProductModelMapping.categoryKey: category?.toProductJson(),
         ProductModelMapping.photoURLKey: photoURL,
         // ProductModelMapping.isInventoryEnableKey: isInventoryEnable,
       };
-
+  Map<String, dynamic> toInvoiceDetailJson() => {
+        ProductModelMapping.idKey: id,
+        ProductModelMapping.nameKey: name,
+        ProductModelMapping.measureUnitKey: measureUnit,
+        ProductModelMapping.unitPriceKey: unitPrice,
+        // ProductModelMapping.isInventoryEnableKey: isInventoryEnable,
+      };
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json[ProductModelMapping.idKey],
         name: json[ProductModelMapping.nameKey],
@@ -62,6 +68,14 @@ class ProductModel extends Equatable {
             : null,
         photoURL: json[ProductModelMapping.photoURLKey],
         // isInventoryEnable: json[ProductModelMapping.isInventoryEnableKey],
+      );
+
+  factory ProductModel.fromInvoiceDetailJson(Map<String, dynamic> json) =>
+      ProductModel(
+        id: json[ProductModelMapping.idKey],
+        name: json[ProductModelMapping.nameKey],
+        measureUnit: json[ProductModelMapping.measureUnitKey],
+        unitPrice: json[ProductModelMapping.unitPriceKey],
       );
 
   ProductModel copyWith({

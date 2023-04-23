@@ -9,6 +9,7 @@ abstract class ICategoryRepository {
   Future<List<CategoryModel>?> getAllCategories();
   Future<String> getNewCategoryID();
   Future<List<CategoryModel>?> getAllCategoryNames();
+  Future<void> deleteCategory(CategoryModel model);
 }
 
 class CategoryRepository implements ICategoryRepository {
@@ -96,7 +97,9 @@ class CategoryRepository implements ICategoryRepository {
           .collection(CategoryModelMapping.collectionName)
           .doc(model.id)
           .update(model.toJson());
-    } catch (_) {}
+    } catch (e) {
+      throw (e.toString());
+    }
   }
 
   /// Gets a new category ID for the current user.
@@ -125,6 +128,20 @@ class CategoryRepository implements ICategoryRepository {
     } catch (_) {
       // If an error occurs, return '1'
       return '1';
+    }
+  }
+
+  @override
+  Future<void> deleteCategory(CategoryModel model) async {
+    try {
+      await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(CategoryModelMapping.collectionName)
+          .doc(model.id)
+          .delete();
+    } catch (e) {
+      throw (e.toString());
     }
   }
 }

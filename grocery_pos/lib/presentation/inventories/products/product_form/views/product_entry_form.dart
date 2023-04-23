@@ -234,14 +234,14 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                               TextFormField(
                                 keyboardType: TextInputType.number,
                                 initialValue:
-                                    productModel.quantity.soldUnit.toString(),
+                                    productModel.quantity!.soldUnit.toString(),
                                 key: const Key(
                                     'productEntryFrm_soldUnitInput_textField'),
                                 onChanged: (value) {
                                   double number =
                                       value != '' ? double.parse(value) : 0.0;
                                   productModel = productModel.copyWith(
-                                      quantity: productModel.quantity
+                                      quantity: productModel.quantity!
                                           .copyWith(soldUnit: number));
                                 },
                                 decoration: const InputDecoration(
@@ -254,14 +254,14 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                               TextFormField(
                                 keyboardType: TextInputType.number,
                                 initialValue:
-                                    productModel.quantity.sku.toString(),
+                                    productModel.quantity!.sku.toString(),
                                 key: const Key(
                                     'productEntryFrm_skuInput_textField'),
                                 onChanged: (value) {
                                   double number =
                                       value != '' ? double.parse(value) : 0.0;
                                   productModel = productModel.copyWith(
-                                      quantity: productModel.quantity
+                                      quantity: productModel.quantity!
                                           .copyWith(sku: number));
                                 },
                                 decoration: const InputDecoration(

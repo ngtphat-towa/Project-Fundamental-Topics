@@ -6,6 +6,7 @@ import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
 import 'package:grocery_pos/presentation/contacts/customers/customer_list/views/customer_list_page.dart';
 import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/views/supplier_list_page.dart';
 import 'package:grocery_pos/presentation/inventories/categories/category_list/views/category_list_page.dart';
+import 'package:grocery_pos/presentation/inventories/products/product_list/views/product_list_page.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
   const CustomNavigationDrawer({
@@ -114,7 +115,11 @@ class CustomNavigationDrawer extends StatelessWidget {
       ),
       ListTile(
         title: const Text('Products'),
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(
+            ProductPage.route(context),
+          );
+        },
       ),
       const Divider(thickness: 1),
       ListTile(

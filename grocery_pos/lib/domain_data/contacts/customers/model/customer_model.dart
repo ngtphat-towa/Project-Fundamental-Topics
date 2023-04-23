@@ -26,6 +26,12 @@ class CustomerModel extends Equatable {
         address = json[CustomerModelMapping.addressKey] != null
             ? Address.fromJson(json[CustomerModelMapping.addressKey])
             : null;
+  factory CustomerModel.fromInvoiceJson(Map<String, dynamic> json) {
+    return CustomerModel(
+      id: json[CustomerModelMapping.idKey],
+      name: json[CustomerModelMapping.nameKey],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         CustomerModelMapping.idKey: id,
@@ -34,6 +40,10 @@ class CustomerModel extends Equatable {
         CustomerModelMapping.phoneKey: phone,
         CustomerModelMapping.descriptionKey: description,
         CustomerModelMapping.addressKey: address?.toJson(),
+      };
+  Map<String, dynamic> toInvoiceJson() => {
+        CustomerModelMapping.idKey: id,
+        CustomerModelMapping.nameKey: name,
       };
   CustomerModel copyWith({
     String? id,
@@ -56,9 +66,6 @@ class CustomerModel extends Equatable {
   static get empty => const CustomerModel(
         id: '',
         name: '',
-        email: '',
-        phone: '',
-        description: '',
       );
   static get none => const CustomerModel(name: 'none');
 

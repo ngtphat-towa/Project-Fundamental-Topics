@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:grocery_pos/domain_data/contacts/customers/model/customer_model.dart';
 
@@ -5,36 +6,47 @@ import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_detail_model
 
 enum InvoiceType { retail, customer }
 
+extension InvoiceTypeExtension on InvoiceType {
+  String get displayString {
+    String shortString = toString().split('.').last;
+    return shortString[0].toUpperCase() + shortString.substring(1);
+  }
+
+  int get number {
+    return index;
+  }
+}
+
 class InvoiceModel extends Equatable {
   final String? id;
-  final String createdDate;
-  final double total;
-  final double discount;
+  final DateTime? createdDate;
+  final double? total;
+  final double? discount;
   final InvoiceType invoiceType;
-  final List<InvoiceDetail> invoiceDetails;
-  final String note;
+  final List<InvoiceDetail>? invoiceDetails;
+  final String? note;
   final CustomerModel? customer;
 
   const InvoiceModel({
     this.id,
-    required this.createdDate,
-    required this.total,
-    required this.discount,
+    this.createdDate,
+    this.total,
+    this.discount,
     required this.invoiceType,
-    required this.invoiceDetails,
-    required this.note,
+    this.invoiceDetails,
+    this.note,
     this.customer,
   });
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {
       InvoiceModelMapping.idKey: id,
-      InvoiceModelMapping.createdDateKey: createdDate,
+      InvoiceModelMapping.createdDateKey: Timestamp.fromDate(createdDate!),
       InvoiceModelMapping.totalKey: total,
       InvoiceModelMapping.discountKey: discount,
       InvoiceModelMapping.invoiceTypeKey: invoiceType.index,
       InvoiceModelMapping.invoiceDetailsKey:
-          invoiceDetails.map((detail) => detail.toJson()).toList(),
+          invoiceDetails!.map((detail) => detail.toJson()).toList(),
       InvoiceModelMapping.noteKey: note,
     };
     if (invoiceType == InvoiceType.customer) {
@@ -45,7 +57,8 @@ class InvoiceModel extends Equatable {
 
   factory InvoiceModel.fromJson(Map<String, dynamic> json) => InvoiceModel(
         id: json[InvoiceModelMapping.idKey],
-        createdDate: json[InvoiceModelMapping.createdDateKey],
+        createdDate:
+            (json[InvoiceModelMapping.createdDateKey] as Timestamp).toDate(),
         total: json[InvoiceModelMapping.totalKey],
         discount: json[InvoiceModelMapping.discountKey],
         invoiceType:
@@ -61,7 +74,7 @@ class InvoiceModel extends Equatable {
 
   InvoiceModel copyWith({
     String? id,
-    String? createdDate,
+    DateTime? createdDate,
     double? total,
     double? discount,
     InvoiceType? invoiceType,
@@ -79,6 +92,20 @@ class InvoiceModel extends Equatable {
         note: note ?? this.note,
         customer: customer ?? this.customer,
       );
+
+  static get empty => InvoiceModel(
+        id: '',
+        createdDate: null,
+        total: 0.0,
+        discount: 0.0,
+        invoiceType: InvoiceType.retail,
+        invoiceDetails: null,
+        note: '',
+        customer: CustomerModel.empty,
+      );
+  bool get isEmpty => this == empty;
+
+  bool get isNotEmpty => !isEmpty;
 
   @override
   List<Object?> get props => [

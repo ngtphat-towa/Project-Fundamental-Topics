@@ -14,7 +14,7 @@ abstract class IInvoiceReposiotry {
   Future<String?> getNewInvoiceID();
   // Find the invoice by ID feilds or Document ID
   Future<InvoiceModel?> getInvoiceByID(String id);
-  Future<List<InvoiceModel>?> getALlInvoices();
+  Future<List<InvoiceModel>?> getAllInvoices();
 }
 
 class InvoiceRepository implements IInvoiceReposiotry {
@@ -109,7 +109,7 @@ class InvoiceRepository implements IInvoiceReposiotry {
   }
 
   @override
-  Future<List<InvoiceModel>?> getALlInvoices() async {
+  Future<List<InvoiceModel>?> getAllInvoices() async {
     try {
       final snapshot = await _firestore
           .collection('Users')
