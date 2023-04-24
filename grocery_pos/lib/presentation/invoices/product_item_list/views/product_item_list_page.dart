@@ -8,12 +8,14 @@ import 'package:grocery_pos/presentation/inventories/products/product_form/bloc/
 import 'package:grocery_pos/presentation/inventories/products/product_form/views/product_entry_form.dart';
 import 'package:grocery_pos/presentation/inventories/products/product_list/bloc/product_list_bloc.dart';
 import 'package:grocery_pos/presentation/inventories/products/product_list/views/product_list_form.dart';
+import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
+import 'package:grocery_pos/presentation/invoices/product_item_list/views/product_item_list_form.dart';
 
-class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+class ProductItemPage extends StatefulWidget {
+  const ProductItemPage({super.key});
 
-  static MaterialPageRoute<ProductPage> route(BuildContext context) {
-    return MaterialPageRoute<ProductPage>(
+  static MaterialPageRoute<ProductItemPage> route(BuildContext context) {
+    return MaterialPageRoute<ProductItemPage>(
       builder: (_) => MultiRepositoryProvider(
         providers: [
           RepositoryProvider.value(
@@ -26,16 +28,23 @@ class ProductPage extends StatefulWidget {
             value: RepositoryProvider.of<SupplierRepository>(context),
           ),
         ],
-        child: const ProductPage(),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: BlocProvider.of<InvoiceFormBloc>(context),
+            ),
+          ],
+          child: const ProductItemPage(),
+        ),
       ),
     );
   }
 
   @override
-  State<ProductPage> createState() => _ProductPageState();
+  State<ProductItemPage> createState() => _ProductItemPageState();
 }
 
-class _ProductPageState extends State<ProductPage> {
+class _ProductItemPageState extends State<ProductItemPage> {
   // ignore: unnecessary_new, prefer_final_fields
   TextEditingController _searchController = new TextEditingController();
 
@@ -66,33 +75,12 @@ class _ProductPageState extends State<ProductPage> {
         appBar: AppBar(
           title: _SearchBar(searchController: _searchController),
         ),
-        floatingActionButton: _AddProductButton(),
+        // floatingActionButton: _AddProductButton(),
         body: const Padding(
           padding: EdgeInsets.all(10),
-          child: ProductListForm(),
+          child: ProductItemListForm(),
         ),
       ),
-    );
-  }
-}
-
-class _AddProductButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      key: const Key("productListFrm_addProduct_elevatedButton"),
-      onPressed: () {
-        BlocProvider.of<ProductFormBloc>(context).add(
-          LoadToEditProductEvent(
-            model: ProductModel.empty,
-            type: ProductFormType.createNew,
-          ),
-        );
-        Navigator.of(context).push(
-          ProductEntryForm.route(context),
-        );
-      },
-      child: const Icon(Icons.add),
     );
   }
 }

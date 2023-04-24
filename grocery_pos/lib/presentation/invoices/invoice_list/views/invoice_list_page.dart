@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
+import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
 import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
 import 'package:grocery_pos/domain_data/pos/invoices/repositories/invoice_repository.dart';
@@ -23,6 +25,12 @@ class InvoicePage extends StatefulWidget {
           ),
           RepositoryProvider.value(
             value: RepositoryProvider.of<InvoiceRepository>(context),
+          ),
+          RepositoryProvider.value(
+            value: RepositoryProvider.of<SupplierRepository>(context),
+          ),
+          RepositoryProvider.value(
+            value: RepositoryProvider.of<CategoryRepository>(context),
           ),
         ],
         child: const InvoicePage(),

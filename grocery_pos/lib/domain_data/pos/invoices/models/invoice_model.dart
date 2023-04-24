@@ -132,3 +132,9 @@ class InvoiceModelMapping {
   static const customerKey = 'customer';
   static const noteKey = 'note';
 }
+
+extension InoiceDetialX on List<InvoiceDetail> {
+  double get totalCost =>
+      fold(0, (sum, item) => sum! + item.product.unitPrice * item.quantity) ??
+      0;
+}

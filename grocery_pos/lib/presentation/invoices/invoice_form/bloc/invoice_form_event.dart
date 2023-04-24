@@ -31,13 +31,17 @@ class InvoiceValueChangedEvent extends InvoiceFormEvent {
 }
 
 class LoadToEditInvoiceEvent extends InvoiceFormEvent {
+  final List<CustomerModel>? customers;
   final InvoiceModel? model;
   final InvoiceFormType type;
   final bool? isValueChanged;
   const LoadToEditInvoiceEvent(
-      {this.model, required this.type, this.isValueChanged = false});
+      {this.model,
+      required this.type,
+      this.customers,
+      this.isValueChanged = false});
   @override
-  List<Object?> get props => [model, type, isValueChanged];
+  List<Object?> get props => [model, type, isValueChanged, customers];
 }
 
 class UpdateInvoiceEvent extends InvoiceFormEvent {

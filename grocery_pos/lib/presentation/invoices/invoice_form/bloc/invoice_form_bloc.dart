@@ -57,10 +57,11 @@ class InvoiceFormBloc extends Bloc<InvoiceFormEvent, InvoiceFormState> {
       LoadToEditInvoiceEvent event, Emitter<InvoiceFormState> emit) async {
     emit(InvoiceFormLoadingState());
     try {
-      List<CustomerModel>? customers = [
-        CustomerModel.empty,
-        ...?(await customerRepository.getAllCustomerNames())
-      ];
+      List<CustomerModel>? customers = event.customers ??
+          [
+            CustomerModel.empty,
+            ...?(await customerRepository.getAllCustomerNames())
+          ];
 
       if (event.type == InvoiceFormType.edit) {
         final latestModel = event.isValueChanged!
@@ -72,8 +73,10 @@ class InvoiceFormBloc extends Bloc<InvoiceFormEvent, InvoiceFormState> {
           formType: event.type,
         ));
       } else {
+        final latestModel =
+            event.isValueChanged! ? event.model : InvoiceModel.empty;
         emit(InvoiceFormLoadedState(
-            invoice: InvoiceModel.empty,
+            invoice: latestModel,
             formType: InvoiceFormType.createNew,
             customers: customers));
       }
