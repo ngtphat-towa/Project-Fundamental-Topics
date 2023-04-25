@@ -30,12 +30,12 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
           products = [model];
         }
       }
-      if (products == null || products.isEmpty) {
-        emit(const ProductListErrorState(
-            message: "Couldn't find any products!"));
-      } else {
-        emit(ProductListLoadedState(products: products));
-      }
+      // if (products == null || products.isEmpty) {
+      //   emit(const ProductListErrorState(
+      //       message: "Couldn't find any products!"));
+      // } else {
+      emit(ProductListLoadedState(products: products));
+      // }
     } catch (e) {
       emit(ProductListErrorState(
           message: "Couldn't find any products! ${e.toString()}"));

@@ -97,6 +97,7 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
                             nameInput = value;
                           },
                           decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.title),
                             labelText: 'Name',
                             helperText: '',
                           ),
@@ -111,6 +112,7 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
                             descriptionInput = value;
                           },
                           decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.description),
                             labelText: 'Description',
                             helperText: '',
                           ),

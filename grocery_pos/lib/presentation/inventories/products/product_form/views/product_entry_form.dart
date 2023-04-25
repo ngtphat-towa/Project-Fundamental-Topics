@@ -115,6 +115,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                                       productModel.copyWith(name: value);
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.person),
                                   labelText: 'Name',
                                   helperText: '',
                                 ),
@@ -130,6 +131,8 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                                       productModel.copyWith(barcode: value);
                                 },
                                 decoration: InputDecoration(
+                                  prefixIcon:
+                                      const Icon(Icons.document_scanner),
                                   suffixIcon: IconButton(
                                     onPressed: () {},
                                     icon: const Icon(
@@ -143,6 +146,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
 
                               //Product Dropdown
                               DropdownButtonFormField<CategoryModel>(
+                                icon: const Icon(Icons.category),
                                 key: const Key(
                                     'productEntryFrm_categoryInput_dropdownButtonFormField'),
                                 value: productModel.category,
@@ -170,6 +174,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
 
                               //Supplier Dropdown
                               DropdownButtonFormField<SupplierModel>(
+                                icon: const Icon(Icons.local_shipping),
                                 key: const Key(
                                     'productEntryFrm_supplierInput_dropdownButtonFormField'),
                                 value: productModel.supplier,
@@ -207,6 +212,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                                       productModel.copyWith(measureUnit: value);
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.scale),
                                   labelText: 'Measure Unit',
                                   helperText: '',
                                 ),
@@ -225,6 +231,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                                           : 0.0);
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.attach_money),
                                   labelText: 'Unit Pirce',
                                   helperText: '',
                                 ),
@@ -245,6 +252,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                                           .copyWith(soldUnit: number));
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.shopping_cart),
                                   labelText: 'Sold Unit',
                                   helperText: '',
                                 ),
@@ -265,6 +273,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                                           .copyWith(sku: number));
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.inventory),
                                   labelText: 'SKU',
                                   helperText: '',
                                 ),

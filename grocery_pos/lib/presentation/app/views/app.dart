@@ -23,12 +23,12 @@ class App extends StatelessWidget {
           authenticationRepository: _authenticationRepository,
         ),
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
               textTheme: AppThemes.textTheme,
               appBarTheme: AppBarTheme(
                 elevation: 0,
                 centerTitle: true,
-                color: AppColors.appBarTitleColor,
                 titleTextStyle: AppThemes.textTheme.headlineSmall,
                 foregroundColor: AppColors.contextColor,
               ),

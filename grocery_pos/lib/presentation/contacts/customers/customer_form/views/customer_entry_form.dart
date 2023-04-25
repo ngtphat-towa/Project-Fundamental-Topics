@@ -137,6 +137,7 @@ class _CustomerEntryFormState extends State<CustomerEntryForm> {
                                   nameInput = value;
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.title),
                                   labelText: 'Name',
                                   helperText: '',
                                 ),
@@ -153,6 +154,7 @@ class _CustomerEntryFormState extends State<CustomerEntryForm> {
                                   emailInput = value;
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.email),
                                   labelText: 'Email',
                                   helperText: '',
                                 ),
@@ -169,6 +171,7 @@ class _CustomerEntryFormState extends State<CustomerEntryForm> {
                                   phoneInput = value;
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.phone),
                                   labelText: 'Phone',
                                   helperText: '',
                                 ),
@@ -193,6 +196,7 @@ class _CustomerEntryFormState extends State<CustomerEntryForm> {
                                   streetInput = value;
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.streetview),
                                   labelText: 'Street',
                                   helperText: '',
                                 ),
@@ -208,6 +212,7 @@ class _CustomerEntryFormState extends State<CustomerEntryForm> {
                                   cityInput = value;
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.location_city),
                                   labelText: 'City',
                                   helperText: '',
                                 ),
@@ -223,6 +228,7 @@ class _CustomerEntryFormState extends State<CustomerEntryForm> {
                                   countryInput = value;
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.public),
                                   labelText: 'Country',
                                   helperText: '',
                                 ),
@@ -240,6 +246,7 @@ class _CustomerEntryFormState extends State<CustomerEntryForm> {
                                   descriptionInput = value;
                                 },
                                 decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.description),
                                   labelText: 'Description',
                                   helperText: '',
                                 ),

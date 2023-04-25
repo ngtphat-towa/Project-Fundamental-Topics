@@ -11,6 +11,8 @@ import 'package:grocery_pos/presentation/inventories/products/product_list/views
 import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_form/views/invoice_entry_form.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_list/views/invoice_list_page.dart';
+import 'package:grocery_pos/presentation/store_profile/views/store_profile_page.dart';
+import 'package:grocery_pos/presentation/user_profile/views/views.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
   const CustomNavigationDrawer({
@@ -58,9 +60,22 @@ class CustomNavigationDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Account'),
+            onTap: () async {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const UserProfilePage()),
+              );
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.store_mall_directory),
             title: const Text('Store Profile'),
-            onTap: () async {},
+            onTap: () async {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const StoreProfilePage()),
+              );
+            },
           ),
           DrawerExpansionTitle(
               iconsName: Icons.point_of_sale,
@@ -99,6 +114,7 @@ class CustomNavigationDrawer extends StatelessWidget {
   List<Widget> contactNavigators(BuildContext context) {
     return [
       ListTile(
+        leading: const Icon(Icons.local_shipping),
         title: const Text('Suppliers'),
         onTap: () async {
           Navigator.of(context).push(
@@ -107,6 +123,7 @@ class CustomNavigationDrawer extends StatelessWidget {
         },
       ),
       ListTile(
+        leading: const Icon(Icons.people),
         title: const Text('Customers'),
         onTap: () async {
           Navigator.of(context).push(
@@ -120,10 +137,12 @@ class CustomNavigationDrawer extends StatelessWidget {
   List<StatelessWidget> inventoryNavigatators(BuildContext context) {
     return [
       ListTile(
+        leading: const Icon(Icons.edit),
         title: const Text('Adjust inventory stock'),
         onTap: () async {},
       ),
       ListTile(
+        leading: const Icon(Icons.production_quantity_limits),
         title: const Text('Products'),
         onTap: () async {
           Navigator.of(context).push(
@@ -133,6 +152,7 @@ class CustomNavigationDrawer extends StatelessWidget {
       ),
       const Divider(thickness: 1),
       ListTile(
+        leading: const Icon(Icons.category),
         title: const Text('Categories'),
         onTap: () async {
           Navigator.of(context).push(

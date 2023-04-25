@@ -22,7 +22,7 @@ class AppThemes {
         bodySmall: _bodySmall,
       );
 
-  static get colorScheme => const ColorScheme(
+  static ColorScheme get colorScheme => const ColorScheme(
         primary: AppColors.primaryColor,
         secondary: AppColors.activeColor,
         surface: AppColors.backgroundColor,
