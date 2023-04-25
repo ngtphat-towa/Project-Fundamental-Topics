@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grocery_pos/domain_data/authentications/models/models.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
+import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
 
 abstract class ICategoryRepository {
   Future<void> createCategory(CategoryModel model);
@@ -10,6 +11,8 @@ abstract class ICategoryRepository {
   Future<String> getNewCategoryID();
   Future<List<CategoryModel>?> getAllCategoryNames();
   Future<void> deleteCategory(CategoryModel model);
+  Future<void> updateProductCategory(
+      CategoryModel model, CategoryModel newModel);
 }
 
 class CategoryRepository implements ICategoryRepository {
@@ -97,6 +100,7 @@ class CategoryRepository implements ICategoryRepository {
           .collection(CategoryModelMapping.collectionName)
           .doc(model.id)
           .update(model.toJson());
+      await updateProductCategory(model, model);
     } catch (e) {
       throw (e.toString());
     }
@@ -140,8 +144,37 @@ class CategoryRepository implements ICategoryRepository {
           .collection(CategoryModelMapping.collectionName)
           .doc(model.id)
           .delete();
+      await updateProductCategory(model, CategoryModel.empty);
     } catch (e) {
-      throw (e.toString());
+      throw ("Delete category error: ${e.toString()}");
+    }
+  }
+
+  @override
+  Future<void> updateProductCategory(
+      CategoryModel model, CategoryModel newModel) async {
+    try {
+      // Get all the documents in the Products subcollection where category.id is equal to model.id
+      final QuerySnapshot productsSnapshot = await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(ProductModelMapping.collectionName)
+          .where(
+              "${ProductModelMapping.categoryKey}.${CategoryModelMapping.idKey}",
+              isEqualTo: model.id)
+          .get();
+
+      // Loop through each document and update it
+      for (final QueryDocumentSnapshot doc in productsSnapshot.docs) {
+        final DocumentReference productRef = _firestore
+            .collection(UserModelMapping.collectioName)
+            .doc(_userModel.uid)
+            .collection(ProductModelMapping.collectionName)
+            .doc(doc.id);
+        await productRef.update(newModel.toProductJson());
+      }
+    } catch (e) {
+      throw Exception("Update Product Category Error: ${e.toString()}");
     }
   }
 }

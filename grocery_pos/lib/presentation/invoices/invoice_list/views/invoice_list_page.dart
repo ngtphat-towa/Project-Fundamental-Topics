@@ -33,7 +33,27 @@ class InvoicePage extends StatefulWidget {
             value: RepositoryProvider.of<CategoryRepository>(context),
           ),
         ],
-        child: const InvoicePage(),
+        child: MultiBlocProvider(
+          providers: [
+            // BlocProvider(
+            //   create: (_) => InvoiceListBloc(
+            //     invoiceRepository: invoiceRepository,
+            //   ),
+            // ),
+            // BlocProvider(
+            //   create: (_) => InvoiceFormBloc(
+            //     invoiceRepository: invoiceRepository,
+            //     productRepository: productRepository,
+            //     customerRepository: customerRepository,
+            //   ),
+            // ),
+            BlocProvider.value(
+                value: BlocProvider.of<InvoiceListBloc>(context)),
+            BlocProvider.value(
+                value: BlocProvider.of<InvoiceFormBloc>(context)),
+          ],
+          child: const InvoicePage(),
+        ),
       ),
     );
   }
@@ -48,35 +68,19 @@ class _InvoicePageState extends State<InvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final invoiceRepository = RepositoryProvider.of<InvoiceRepository>(context);
-    final productRepository = RepositoryProvider.of<ProductRepository>(context);
-    final customerRepository =
-        RepositoryProvider.of<CustomerRepository>(context);
+    // final invoiceRepository = RepositoryProvider.of<InvoiceRepository>(context);
+    // final productRepository = RepositoryProvider.of<ProductRepository>(context);
+    // final customerRepository =
+    //     RepositoryProvider.of<CustomerRepository>(context);
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => InvoiceListBloc(
-            invoiceRepository: invoiceRepository,
-          ),
-        ),
-        BlocProvider(
-          create: (_) => InvoiceFormBloc(
-            invoiceRepository: invoiceRepository,
-            productRepository: productRepository,
-            customerRepository: customerRepository,
-          ),
-        ),
-      ],
-      child: Scaffold(
-        appBar: AppBar(
-          title: _SearchBar(searchController: _searchController),
-        ),
-        floatingActionButton: _AddInvoiceButton(),
-        body: const Padding(
-          padding: EdgeInsets.all(10),
-          child: InvoiceListForm(),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: _SearchBar(searchController: _searchController),
+      ),
+      floatingActionButton: _AddInvoiceButton(),
+      body: const Padding(
+        padding: EdgeInsets.all(10),
+        child: InvoiceListForm(),
       ),
     );
   }
@@ -87,7 +91,7 @@ class _AddInvoiceButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       key: const Key("invoiceListFrm_addInvoice_elevatedButton"),
-      onPressed: () {
+      onPressed: () async {
         BlocProvider.of<InvoiceFormBloc>(context).add(
           LoadToEditInvoiceEvent(
             model: InvoiceModel.empty,

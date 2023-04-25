@@ -32,6 +32,10 @@ class InvoiceFormBloc extends Bloc<InvoiceFormEvent, InvoiceFormState> {
       UpdateInvoiceEvent event, Emitter<InvoiceFormState> emit) async {
     emit(InvoiceFormLoadingState());
     try {
+      // Update the product stock first
+      await _updateInvenotoryProductByInvoice(
+          model: event.model, type: InvoiceFormType.edit);
+      // Update the new Invooice
       await invoiceRepository.updateInvoice(event.model);
       emit(const InvoiceFormSuccessState(
           successMessage: "Update invoice succesfully!"));
@@ -44,8 +48,15 @@ class InvoiceFormBloc extends Bloc<InvoiceFormEvent, InvoiceFormState> {
       AddInvoiceEvent event, Emitter<InvoiceFormState> emit) async {
     emit(InvoiceFormLoadingState());
     try {
+      // Update the new Invoice
       final newId = await invoiceRepository.getNewInvoiceID();
-      await invoiceRepository.createInvoice(event.model.copyWith(id: newId));
+      await invoiceRepository.createInvoice(event.model.copyWith(
+          id: newId, createdDate: event.model.createdDate ?? DateTime.now()));
+
+      // Update the product stock
+      await _updateInvenotoryProductByInvoice(
+          model: event.model, type: InvoiceFormType.createNew);
+
       emit(const InvoiceFormSuccessState(
           successMessage: "Update invoice succesfully!"));
     } catch (e) {
@@ -67,18 +78,26 @@ class InvoiceFormBloc extends Bloc<InvoiceFormEvent, InvoiceFormState> {
         final latestModel = event.isValueChanged!
             ? event.model
             : await invoiceRepository.getInvoiceByID(event.model!.id!);
-        emit(InvoiceFormLoadedState(
-          invoice: latestModel,
-          customers: customers,
-          formType: event.type,
-        ));
+        emit(
+          InvoiceFormLoadedState(
+            invoice: latestModel,
+            customers: customers,
+            formType: event.type,
+            isValueChanged: (event.isValueChanged!),
+          ),
+        );
       } else {
         final latestModel =
             event.isValueChanged! ? event.model : InvoiceModel.empty;
-        emit(InvoiceFormLoadedState(
+        emit(
+          InvoiceFormLoadedState(
             invoice: latestModel,
             formType: InvoiceFormType.createNew,
-            customers: customers));
+            customers: customers,
+            isValueChanged:
+                (event.isValueChanged! && event.model?.invoiceDetails != null),
+          ),
+        );
       }
     } catch (e) {
       emit(InvoiceFormErrorState(message: e.toString()));
@@ -88,6 +107,30 @@ class InvoiceFormBloc extends Bloc<InvoiceFormEvent, InvoiceFormState> {
   Future<void> _backCategroyFormEvent(
       BackCategroyFormEvent event, Emitter<InvoiceFormState> emit) async {
     emit(InvoiceFormInitial());
+  }
+
+  Future<void> _updateInvenotoryProductByInvoice(
+      {required InvoiceModel model, required InvoiceFormType type}) async {
+    try {
+      // restore quanity of product which  mean quantity will be nagative
+      if (type == InvoiceFormType.edit) {
+        // return back the invoices product
+        final currentInvoices =
+            (await invoiceRepository.getInvoiceByID(model.id!))!;
+
+        for (var invoiceDetail in currentInvoices.invoiceDetails!) {
+          await productRepository.updateProductQuantity(
+              invoiceDetail.product, -(invoiceDetail.quantity));
+        }
+      }
+      // update product by new invoice
+      for (var invoiceDetail in model.invoiceDetails!) {
+        await productRepository.updateProductQuantity(
+            invoiceDetail.product, invoiceDetail.quantity);
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
 //   Future<void> _invoiceValueChangedEvent(

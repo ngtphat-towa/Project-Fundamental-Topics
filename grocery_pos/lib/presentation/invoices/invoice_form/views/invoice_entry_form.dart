@@ -208,17 +208,17 @@ class InvoiceEntryBody extends StatelessWidget {
             BlocBuilder<InvoiceFormBloc, InvoiceFormState>(
               builder: (context, state) {
                 if (state is InvoiceFormLoadedState) {
-                  return Text(
-                    "Total: ${state.invoice!.total.toString()}",
-                    key: const Key('invoiceEntryFrm_totalDisplay_textField'),
-                    // enabled: false,
-                    // decoration: const InputDecoration(
-                    //     border: InputBorder.none,
-                    //     labelText: 'Total',
-                    //     helperText: '',
-                    //     prefixIcon: Icon(Icons.tag)
-                    // ),
-                  );
+                  return TextFormField(
+                      initialValue: "Total: ${state.invoice!.total.toString()}",
+                      key: const Key('invoiceEntryFrm_totalDisplay_textField'),
+                      enabled: false,
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          labelText: 'Total',
+                          helperText: '',
+                          prefixIcon: Icon(Icons.tag)
+                          // ),
+                          ));
                 }
                 return const Text("Couldnt Load Total ");
               },
@@ -226,7 +226,6 @@ class InvoiceEntryBody extends StatelessWidget {
             const SizedBox(height: 16),
 
             //Discount
-            //TODO: change texteditcontroler
             BlocBuilder<InvoiceFormBloc, InvoiceFormState>(
               builder: (context, state) {
                 if (state is InvoiceFormLoadedState) {
@@ -234,14 +233,17 @@ class InvoiceEntryBody extends StatelessWidget {
                     initialValue: state.invoice!.discount.toString(),
                     key: const Key('invoiceEntryFrm_discountInput_textField'),
                     onChanged: (value) {
-                      BlocProvider.of<InvoiceFormBloc>(context).add(
-                        LoadToEditInvoiceEvent(
-                            customers: state.customers,
-                            isValueChanged: true,
-                            model: state.invoice!
-                                .copyWith(discount: double.parse(value)),
-                            type: state.formType!),
-                      );
+                      if (value.isNotEmpty) {
+                        BlocProvider.of<InvoiceFormBloc>(context).add(
+                          LoadToEditInvoiceEvent(
+                              customers: state.customers,
+                              isValueChanged: true,
+                              model: state.invoice!.copyWith(
+                                  discount: double.parse(
+                                      state.invoice!.discount.toString())),
+                              type: state.formType!),
+                        );
+                      }
                     },
                     decoration: const InputDecoration(
                         labelText: 'Discount',
@@ -523,21 +525,28 @@ class _SummitButton extends StatelessWidget {
                 minimumSize: const Size.fromHeight(45),
               ),
               key: const Key('invoiceEntryFrm_summitProduct_elevatedButton'),
-              onPressed: () async {
-                switch (state.formType) {
-                  case InvoiceFormType.edit:
-                    BlocProvider.of<InvoiceFormBloc>(context)
-                        .add(UpdateInvoiceEvent(state.invoice!));
-                    break;
-                  case InvoiceFormType.createNew:
-                    BlocProvider.of<InvoiceFormBloc>(context)
-                        .add(AddInvoiceEvent(state.invoice!));
-                    break;
-                  default:
-                    break;
-                }
-                Navigator.pop(context);
-              },
+              onPressed: (state.isValueChanged!)
+                  ? () async {
+                      switch (state.formType) {
+                        case InvoiceFormType.edit:
+                          BlocProvider.of<InvoiceFormBloc>(context)
+                              .add(UpdateInvoiceEvent(state.invoice!));
+                          BlocProvider.of<InvoiceListBloc>(context)
+                              .add(const LoadInvoiceListEvent());
+                          break;
+                        case InvoiceFormType.createNew:
+                          BlocProvider.of<InvoiceFormBloc>(context)
+                              .add(AddInvoiceEvent(state.invoice!));
+                          BlocProvider.of<InvoiceListBloc>(context)
+                              .add(const LoadInvoiceListEvent());
+
+                          break;
+                        default:
+                          break;
+                      }
+                      Navigator.pop(context);
+                    }
+                  : null,
               child: const Text("Done"));
         } else {
           if (state is InvoiceFormLoadingState) {

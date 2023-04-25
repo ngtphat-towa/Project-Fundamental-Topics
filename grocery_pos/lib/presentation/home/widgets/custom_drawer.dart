@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_pos/common/themes/colors.dart';
 import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
+import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
 import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
 import 'package:grocery_pos/presentation/contacts/customers/customer_list/views/customer_list_page.dart';
 import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/views/supplier_list_page.dart';
 import 'package:grocery_pos/presentation/inventories/categories/category_list/views/category_list_page.dart';
 import 'package:grocery_pos/presentation/inventories/products/product_list/views/product_list_page.dart';
+import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
+import 'package:grocery_pos/presentation/invoices/invoice_form/views/invoice_entry_form.dart';
+import 'package:grocery_pos/presentation/invoices/invoice_list/views/invoice_list_page.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
   const CustomNavigationDrawer({
@@ -56,14 +60,20 @@ class CustomNavigationDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.store_mall_directory),
             title: const Text('Store Profile'),
-            onTap: () {},
+            onTap: () async {},
           ),
           DrawerExpansionTitle(
-              title: "Point Of Sales", nagivigates: posNavigators(context)),
+              iconsName: Icons.point_of_sale,
+              title: "Point Of Sales",
+              nagivigates: posNavigators(context)),
           DrawerExpansionTitle(
-              title: "Inventory", nagivigates: inventoryNavigatators(context)),
+              iconsName: Icons.inventory,
+              title: "Inventory",
+              nagivigates: inventoryNavigatators(context)),
           DrawerExpansionTitle(
-              title: "Contacts", nagivigates: contactNavigators(context)),
+              iconsName: Icons.contacts,
+              title: "Contacts",
+              nagivigates: contactNavigators(context)),
           const Divider(thickness: 1.0),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -90,7 +100,7 @@ class CustomNavigationDrawer extends StatelessWidget {
     return [
       ListTile(
         title: const Text('Suppliers'),
-        onTap: () {
+        onTap: () async {
           Navigator.of(context).push(
             SupplierPage.route(context),
           );
@@ -98,7 +108,7 @@ class CustomNavigationDrawer extends StatelessWidget {
       ),
       ListTile(
         title: const Text('Customers'),
-        onTap: () {
+        onTap: () async {
           Navigator.of(context).push(
             CustomerPage.route(context),
           );
@@ -111,11 +121,11 @@ class CustomNavigationDrawer extends StatelessWidget {
     return [
       ListTile(
         title: const Text('Adjust inventory stock'),
-        onTap: () {},
+        onTap: () async {},
       ),
       ListTile(
         title: const Text('Products'),
-        onTap: () {
+        onTap: () async {
           Navigator.of(context).push(
             ProductPage.route(context),
           );
@@ -124,7 +134,7 @@ class CustomNavigationDrawer extends StatelessWidget {
       const Divider(thickness: 1),
       ListTile(
         title: const Text('Categories'),
-        onTap: () {
+        onTap: () async {
           Navigator.of(context).push(
             CategoryPage.route(context),
           );
@@ -135,14 +145,31 @@ class CustomNavigationDrawer extends StatelessWidget {
 
   List<Widget> posNavigators(BuildContext context) => [
         ListTile(
+          leading: const Icon(Icons.add),
           title: const Text('Add new invoice'),
-          onTap: () {},
+          onTap: () async {
+            BlocProvider.of<InvoiceFormBloc>(context).add(
+              LoadToEditInvoiceEvent(
+                model: InvoiceModel.empty,
+                type: InvoiceFormType.createNew,
+              ),
+            );
+            Navigator.of(context).push(
+              InvoiceEntryForm.route(context),
+            );
+          },
         ),
         ListTile(
+          leading: const Icon(Icons.receipt),
           title: const Text('View invoices list'),
-          onTap: () {},
+          onTap: () async {
+            Navigator.of(context).push(
+              InvoicePage.route(context),
+            );
+          },
         ),
         ListTile(
+          leading: const Icon(Icons.bar_chart),
           title: const Text('View invoices report'),
           onTap: () {},
         )
@@ -151,15 +178,19 @@ class CustomNavigationDrawer extends StatelessWidget {
 
 class DrawerExpansionTitle extends StatelessWidget {
   final List<Widget>? nagivigates;
-
+  final IconData iconsName;
   final String title;
 
   const DrawerExpansionTitle(
-      {super.key, this.nagivigates, required this.title});
+      {super.key,
+      this.nagivigates,
+      required this.title,
+      required this.iconsName});
 
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
+      leading: Icon(iconsName),
       title: Text(title),
       children: nagivigates ?? [],
     );

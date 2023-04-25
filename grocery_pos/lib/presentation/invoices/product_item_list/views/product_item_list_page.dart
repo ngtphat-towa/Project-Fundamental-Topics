@@ -5,9 +5,7 @@ import 'package:grocery_pos/domain_data/inventories/categories/repositories/cate
 import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
 import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
 import 'package:grocery_pos/presentation/inventories/products/product_form/bloc/product_form_bloc.dart';
-import 'package:grocery_pos/presentation/inventories/products/product_form/views/product_entry_form.dart';
 import 'package:grocery_pos/presentation/inventories/products/product_list/bloc/product_list_bloc.dart';
-import 'package:grocery_pos/presentation/inventories/products/product_list/views/product_list_form.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
 import 'package:grocery_pos/presentation/invoices/product_item_list/views/product_item_list_form.dart';
 

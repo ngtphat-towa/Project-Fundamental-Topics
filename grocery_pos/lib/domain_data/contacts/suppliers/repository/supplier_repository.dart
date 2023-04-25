@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grocery_pos/domain_data/authentications/models/models.dart';
 import 'package:grocery_pos/domain_data/contacts/suppliers/model/supplier_model.dart';
+import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
 
 abstract class ISupplierRepository {
   Future<void> createSupplier(SupplierModel model) async {}
@@ -11,6 +12,8 @@ abstract class ISupplierRepository {
   Future<SupplierModel?> getSupplierByID(String id);
   Future<List<SupplierModel>?> getAllSuppliers();
   Future<List<SupplierModel>?> getAllSupplierNames();
+  Future<void> updateProductSupplier(
+      SupplierModel model, SupplierModel newModel);
 }
 
 class SupplierRepository implements ISupplierRepository {
@@ -32,7 +35,9 @@ class SupplierRepository implements ISupplierRepository {
           .collection(SupplierModelMapping.collectionName)
           .doc(model.id)
           .set(model.toJson());
-    } catch (_) {}
+    } catch (e) {
+      throw Exception("Couldn't create supplier: ${e.toString()}");
+    }
   }
 
   @override
@@ -44,7 +49,10 @@ class SupplierRepository implements ISupplierRepository {
           .collection(SupplierModelMapping.collectionName)
           .doc(model.id)
           .delete();
-    } catch (_) {}
+      await updateProductSupplier(model, SupplierModel.empty);
+    } catch (e) {
+      throw Exception("Update Supplier Error ${model.id}: ${e.toString()}");
+    }
   }
 
   @override
@@ -62,10 +70,11 @@ class SupplierRepository implements ISupplierRepository {
             )
             .toList();
         return models;
+      } else {
+        throw Exception("The supplier list is emty");
       }
-      return null;
-    } catch (_) {
-      return null;
+    } catch (e) {
+      throw Exception("Fetch the supplier: ${e.toString()}");
     }
   }
 
@@ -80,8 +89,8 @@ class SupplierRepository implements ISupplierRepository {
           .get();
       if (snapshot.data() == null) return null;
       return SupplierModel.fromJson(snapshot.data()!);
-    } catch (_) {
-      return null;
+    } catch (e) {
+      throw Exception("Could't find the supplier's ID $id: ${e.toString()}");
     }
   }
 
@@ -94,7 +103,10 @@ class SupplierRepository implements ISupplierRepository {
           .collection(SupplierModelMapping.collectionName)
           .doc(model.id)
           .update(model.toJson());
-    } catch (_) {}
+      await updateProductSupplier(model, model);
+    } catch (e) {
+      throw Exception("Update Supplier Error: ${e.toString()}");
+    }
   }
 
   @override
@@ -150,6 +162,34 @@ class SupplierRepository implements ISupplierRepository {
       return null;
     } on Exception catch (e) {
       throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> updateProductSupplier(
+      SupplierModel model, SupplierModel newModel) async {
+    try {
+      // Get all the documents in the Products subcollection where supplier.id is equal to model.id
+      final QuerySnapshot productsSnapshot = await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(ProductModelMapping.collectionName)
+          .where(
+              "${ProductModelMapping.supplierKey}.${SupplierModelMapping.idKey}",
+              isEqualTo: model.id)
+          .get();
+
+      // Loop through each document and update it
+      for (final QueryDocumentSnapshot doc in productsSnapshot.docs) {
+        final DocumentReference productRef = _firestore
+            .collection(UserModelMapping.collectioName)
+            .doc(_userModel.uid)
+            .collection(ProductModelMapping.collectionName)
+            .doc(doc.id);
+        await productRef.update(newModel.toProductJson());
+      }
+    } catch (e) {
+      throw Exception("Update Product Supplier Error: ${e.toString()}");
     }
   }
 }

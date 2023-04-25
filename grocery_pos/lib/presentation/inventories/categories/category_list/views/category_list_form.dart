@@ -79,7 +79,8 @@ class _CategoryCard extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
-              // context.read<CategoryCubit>().deleteCategory(category.id);
+              BlocProvider.of<CategoryListBloc>(context)
+                  .add(DeleteCategoryEvent(category));
             },
           ),
         ],

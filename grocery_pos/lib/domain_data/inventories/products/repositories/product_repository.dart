@@ -10,7 +10,7 @@ abstract class IProductRepository {
   Future<Quantity?> getProductQuantityByID(String id);
   Future<List<ProductModel>?> getAllProducts();
   Future<void> updateProduct(ProductModel model);
-  Future<void> updateQuantityByID(String id, Quantity quantity);
+  Future<void> updateProductQuantity(ProductModel model, double quantity);
   Future<void> deleteProduct(ProductModel model);
 }
 
@@ -25,12 +25,16 @@ class ProductRepository implements IProductRepository {
 
   @override
   Future<void> createProduct(ProductModel model) async {
-    await _firestore
-        .collection(UserModelMapping.collectioName)
-        .doc(_userModel.uid)
-        .collection(ProductModelMapping.collectionName)
-        .doc(model.id)
-        .set(model.toJson());
+    try {
+      await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(ProductModelMapping.collectionName)
+          .doc(model.id)
+          .set(model.toJson());
+    } on Exception catch (e) {
+      throw Exception("Error occoured: ${e.toString()}");
+    }
   }
 
   @override
@@ -49,16 +53,21 @@ class ProductRepository implements IProductRepository {
 
   @override
   Future<Quantity?> getProductQuantityByID(String id) async {
-    final snapshot = await _firestore
-        .collection(UserModelMapping.collectioName)
-        .doc(_userModel.uid)
-        .collection(ProductModelMapping.collectionName)
-        .doc(id)
-        .get();
-    if (snapshot.exists) {
-      return ProductModel.fromJson(snapshot.data()!).quantity;
+    try {
+      final snapshot = await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(ProductModelMapping.collectionName)
+          .doc(id)
+          .get();
+      if (snapshot.exists) {
+        return ProductModel.fromJson(snapshot.data()!).quantity;
+      } else {
+        throw Exception("Can't find the product which has ID: $id");
+      }
+    } on Exception catch (e) {
+      throw Exception("Error occoured: ${e.toString()}");
     }
-    return null;
   }
 
   @override
@@ -76,7 +85,7 @@ class ProductRepository implements IProductRepository {
       }
       return null;
     } catch (e) {
-      throw Exception(e.toString());
+      throw Exception("Error occoured: ${e.toString()}");
     }
   }
 
@@ -89,7 +98,9 @@ class ProductRepository implements IProductRepository {
           .collection(ProductModelMapping.collectionName)
           .doc(model.id)
           .update(model.toJson());
-    } catch (_) {}
+    } catch (e) {
+      throw Exception("Error occoured: ${e.toString()}");
+    }
   }
 
   @override
@@ -101,17 +112,29 @@ class ProductRepository implements IProductRepository {
           .collection(ProductModelMapping.collectionName)
           .doc(model.id)
           .delete();
-    } catch (_) {}
+    } catch (e) {
+      throw Exception("Error occoured: ${e.toString()}");
+    }
   }
 
   @override
-  Future<void> updateQuantityByID(String id, Quantity quantity) async {
-    await _firestore
-        .collection(UserModelMapping.collectioName)
-        .doc(_userModel.uid)
-        .collection(ProductModelMapping.collectionName)
-        .doc(id)
-        .update({ProductModelMapping.quantityKey: quantity.toJson()});
+  Future<void> updateProductQuantity(
+      ProductModel model, double quantity) async {
+    try {
+      // Find the old one
+      final currentQuantity = await getProductQuantityByID(model.id!);
+      final newQuanitty = currentQuantity!.copyWith(
+          soldUnit: currentQuantity.soldUnit! + quantity,
+          sku: currentQuantity.soldUnit! - quantity);
+      await _firestore
+          .collection(UserModelMapping.collectioName)
+          .doc(_userModel.uid)
+          .collection(ProductModelMapping.collectionName)
+          .doc(model.id)
+          .update({ProductModelMapping.quantityKey: newQuanitty.toJson()});
+    } on Exception catch (e) {
+      throw Exception("Error occoured: ${e.toString()}");
+    }
   }
 
   @override
@@ -144,7 +167,7 @@ class ProductRepository implements IProductRepository {
 
       return 'SL1';
     } on Exception catch (e) {
-      throw Exception(e.toString());
+      throw Exception("Error occoured: ${e.toString()}");
     }
   }
 }

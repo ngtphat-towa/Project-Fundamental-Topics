@@ -14,8 +14,6 @@ class CategoryListBloc extends Bloc<CategoryListEvent, CategoryListState> {
   CategoryListBloc({required this.categoryRepository})
       : super(CategoryListInitial()) {
     on<LoadCategoryListEvent>(_loadCategoryListEvent);
-    // on<AddCategoryEvent>(_addCategoryEvent);
-    // on<UpdateCategoryEvent>(_updateCategoryEvent);
     on<DeleteCategoryEvent>(_deleteCategoryEvent);
   }
 

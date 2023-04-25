@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
 import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_detail_model.dart';
+import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
 import 'package:grocery_pos/presentation/inventories/products/product_list/bloc/product_list_bloc.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
 
@@ -77,8 +77,9 @@ class _ProductItemListFormState extends State<ProductItemListForm> {
                       LoadToEditInvoiceEvent(
                           customers: state.customers,
                           isValueChanged: true,
-                          model: state.invoice!
-                              .copyWith(invoiceDetails: newInvoiceDetails),
+                          model: state.invoice!.copyWith(
+                              invoiceDetails: newInvoiceDetails,
+                              total: newInvoiceDetails.totalCost),
                           type: state.formType!),
                     );
                     Navigator.of(context).pop();
