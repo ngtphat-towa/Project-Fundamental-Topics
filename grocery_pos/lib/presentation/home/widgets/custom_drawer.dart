@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_pos/common/themes/colors.dart';
+import 'package:grocery_pos/domain_data/authentications/models/user_model.dart';
 import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
 import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
+import 'package:grocery_pos/domain_data/store/store_profile_model.dart';
 import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
 import 'package:grocery_pos/presentation/contacts/customers/customer_list/views/customer_list_page.dart';
 import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/views/supplier_list_page.dart';
@@ -11,8 +13,10 @@ import 'package:grocery_pos/presentation/inventories/products/product_list/views
 import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_form/views/invoice_entry_form.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_list/views/invoice_list_page.dart';
+import 'package:grocery_pos/presentation/store_profile/bloc/store_form_bloc.dart';
 import 'package:grocery_pos/presentation/store_profile/views/store_profile_page.dart';
-import 'package:grocery_pos/presentation/user_profile/views/views.dart';
+import 'package:grocery_pos/presentation/user_profile/bloc/user_form_bloc.dart';
+import 'package:grocery_pos/presentation/user_profile/views/user_profile_page.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
   const CustomNavigationDrawer({
@@ -63,8 +67,13 @@ class CustomNavigationDrawer extends StatelessWidget {
             leading: const Icon(Icons.person),
             title: const Text('Account'),
             onTap: () async {
+              BlocProvider.of<UserFormBloc>(context).add(
+                const LoadToEditUserEvent(
+                  model: UserModel.empty,
+                ),
+              );
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const UserProfilePage()),
+                UserProfilePage.route(context),
               );
             },
           ),
@@ -72,8 +81,13 @@ class CustomNavigationDrawer extends StatelessWidget {
             leading: const Icon(Icons.store_mall_directory),
             title: const Text('Store Profile'),
             onTap: () async {
+              BlocProvider.of<StoreFormBloc>(context).add(
+                LoadToEditStoreEvent(
+                  model: StoreProfileModel.empty,
+                ),
+              );
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const StoreProfilePage()),
+                StoreProfilePage.route(context),
               );
             },
           ),

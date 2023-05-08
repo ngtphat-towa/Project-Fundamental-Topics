@@ -13,6 +13,8 @@ import 'package:grocery_pos/presentation/home/widgets/custom_drawer.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_form/views/invoice_entry_form.dart';
 import 'package:grocery_pos/presentation/invoices/invoice_list/bloc/invoice_list_bloc.dart';
+import 'package:grocery_pos/presentation/store_profile/bloc/store_form_bloc.dart';
+import 'package:grocery_pos/presentation/user_profile/bloc/user_form_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -59,6 +61,11 @@ class HomePage extends StatelessWidget {
             userModel: currentUser,
           ),
         ),
+        RepositoryProvider(
+          create: (_) => UserRepository(
+            firebaseUserModel: currentUser,
+          ),
+        ),
       ],
       child: const HomePageScreen(),
     );
@@ -76,6 +83,9 @@ class HomePageScreen extends StatelessWidget {
     final productRepository = RepositoryProvider.of<ProductRepository>(context);
     final customerRepository =
         RepositoryProvider.of<CustomerRepository>(context);
+    final storeProfileRepository =
+        RepositoryProvider.of<StoreProfileRepository>(context);
+    final userRepository = RepositoryProvider.of<UserRepository>(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -88,6 +98,16 @@ class HomePageScreen extends StatelessWidget {
             invoiceRepository: invoiceRepository,
             productRepository: productRepository,
             customerRepository: customerRepository,
+          ),
+        ),
+        BlocProvider(
+          create: (_) => StoreFormBloc(
+            storeProfileRepository: storeProfileRepository,
+          ),
+        ),
+        BlocProvider(
+          create: (_) => UserFormBloc(
+            userRepository: userRepository,
           ),
         ),
       ],

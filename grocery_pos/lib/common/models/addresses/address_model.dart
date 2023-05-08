@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
 class Address extends Equatable {
@@ -23,10 +24,22 @@ class Address extends Equatable {
       };
 
   // ignore: prefer_const_constructors
-  static get empty => Address(street: '', city: '', country: '');
+  static Address get empty => Address(street: '', city: '', country: '');
 
   get full => '$street $city, ${country!}';
 
   @override
   List<Object?> get props => [street, city, country];
+
+  Address copyWith({
+    String? street,
+    String? city,
+    String? country,
+  }) {
+    return Address(
+      street: street ?? this.street,
+      city: city ?? this.city,
+      country: country ?? this.country,
+    );
+  }
 }

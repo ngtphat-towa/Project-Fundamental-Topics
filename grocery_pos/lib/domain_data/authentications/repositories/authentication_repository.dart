@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:grocery_pos/common/models/models.dart';
 import 'package:grocery_pos/domain_data/authentications/models/models.dart';
 import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
@@ -141,17 +141,17 @@ class AuthenticationRepository implements IAuthenticationRepository {
       {required String email, required String password}) async {
     try {
       // Login with firebase auth
-      final UserCredential userCredential =
-          await _firebaseAuth.signInWithEmailAndPassword(
+      // final UserCredential userCredential =
+      await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      final userRepository = UserRepository();
-      final UserModel? userData =
-          await userRepository.getUserByUID(userCredential.user!.uid);
-      if (userData != null) {
-        debugPrint("${userData.uid} ${userData.email}  ${userData.name}");
-      }
+      // final userRepository = UserRepository();
+      // final UserModel? userData =
+      //     await userRepository.getUserByUID(userCredential.user!.uid);
+      // if (userData != null) {
+      //   debugPrint("${userData.uid} ${userData.email}  ${userData.name}");
+      // }
     } on FirebaseAuthException catch (e) {
       throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
@@ -173,7 +173,8 @@ class AuthenticationRepository implements IAuthenticationRepository {
     try {
       final UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
-      await UserRepository().createUser(userCredential.user!.toUserModel);
+      await UserRepository(firebaseUserModel: userCredential.user!.toUserModel)
+          .createUser();
     } on FirebaseAuthException catch (e) {
       throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {

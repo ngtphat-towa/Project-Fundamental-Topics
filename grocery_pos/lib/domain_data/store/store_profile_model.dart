@@ -49,6 +49,15 @@ class StoreProfileModel extends Equatable {
     );
   }
 
+  static get empty => const StoreProfileModel(
+        email: '',
+        phone: '',
+        storeName: '',
+        ownerName: '',
+      );
+  bool get isEmpty => this == StoreProfileModel.empty;
+  bool get isNotEmpty => this != StoreProfileModel.empty;
+
   @override
   List<Object?> get props => [address, email, phone, storeName, ownerName];
 }

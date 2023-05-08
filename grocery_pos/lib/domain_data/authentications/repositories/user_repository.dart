@@ -4,15 +4,15 @@ import 'package:flutter/widgets.dart';
 import 'package:grocery_pos/domain_data/authentications/models/user_model.dart';
 
 abstract class IUserRepository {
-  Future<UserModel?> getUserByUID(String uid);
-  Future<void> createUser(UserModel model) async {}
+  Future<UserModel?> getUser();
+  Future<void> createUser() async {}
   Future<void> updateUser(UserModel model) async {}
 }
 
 class UserRepository implements IUserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  UserRepository();
+  final UserModel firebaseUserModel;
+  UserRepository({required this.firebaseUserModel});
   // @override
   // Future<UserModel?> getUserByUID(String uid) async {
   //   try {
@@ -31,11 +31,11 @@ class UserRepository implements IUserRepository {
   // }
 
   @override
-  Future<UserModel?> getUserByUID(String uid) async {
+  Future<UserModel?> getUser() async {
     try {
       final snapshot = await _firestore
           .collection(UserModelMapping.collectioName)
-          .doc(uid)
+          .doc(firebaseUserModel.uid)
           .get();
       if (snapshot.exists) {
         final userData = snapshot.data();
@@ -48,12 +48,12 @@ class UserRepository implements IUserRepository {
   }
 
   @override
-  Future<void> createUser(UserModel model) async {
+  Future<void> createUser() async {
     try {
       await _firestore
           .collection(UserModelMapping.collectioName)
-          .doc(model.uid)
-          .set(model.toJson());
+          .doc(firebaseUserModel.uid)
+          .set(firebaseUserModel.toJson());
       debugPrint("Create new account successfully!");
     } catch (e) {
       throw Exception(e.toString());
