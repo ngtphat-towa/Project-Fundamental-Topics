@@ -12,8 +12,8 @@ class Quantity extends Equatable {
       };
 
   factory Quantity.fromJson(Map<String, dynamic> json) => Quantity(
-        sku: json['sku'],
-        soldUnit: json['soldUnit'],
+        sku: json['sku'].toDouble(),
+        soldUnit: json['soldUnit'].toDouble(),
       );
 
   Quantity copyWith({double? sku, double? soldUnit}) => Quantity(

@@ -55,7 +55,7 @@ class ProductModel extends Equatable {
         id: json[ProductModelMapping.idKey],
         name: json[ProductModelMapping.nameKey],
         measureUnit: json[ProductModelMapping.measureUnitKey],
-        unitPrice: json[ProductModelMapping.unitPriceKey] as double,
+        unitPrice: json[ProductModelMapping.unitPriceKey].toDouble(),
         quantity: Quantity.fromJson(json[ProductModelMapping.quantityKey]),
         barcode: json[ProductModelMapping.barcodeKey],
         supplier: json[ProductModelMapping.supplierKey] != null
@@ -75,7 +75,7 @@ class ProductModel extends Equatable {
         id: json[ProductModelMapping.idKey],
         name: json[ProductModelMapping.nameKey],
         measureUnit: json[ProductModelMapping.measureUnitKey],
-        unitPrice: json[ProductModelMapping.unitPriceKey],
+        unitPrice: json[ProductModelMapping.unitPriceKey].toDouble(),
       );
 
   ProductModel copyWith({

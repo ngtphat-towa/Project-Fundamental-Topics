@@ -79,7 +79,7 @@ class _InvoicePageState extends State<InvoicePage> {
       ),
       floatingActionButton: _AddInvoiceButton(),
       body: const Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(1),
         child: InvoiceListForm(),
       ),
     );
@@ -117,7 +117,7 @@ class _SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(1.0),
       child: TextField(
         controller: _searchController,
         autocorrect: false,

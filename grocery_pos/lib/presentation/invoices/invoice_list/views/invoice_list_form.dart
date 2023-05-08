@@ -40,7 +40,7 @@ class _InvoiceListFormState extends State<InvoiceListForm> {
           return const Center(child: CircularProgressIndicator());
         } else if (state is InvoiceListLoadedState) {
           return ListView.builder(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(8.0),
             itemCount: state.invoices!.length,
             itemBuilder: (context, index) {
               final invoice = state.invoices![index];
@@ -56,6 +56,29 @@ class _InvoiceListFormState extends State<InvoiceListForm> {
         }
       },
     );
+  }
+}
+
+extension DateTimeFormat on DateTime {
+  String get format {
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    final month = months[this.month - 1];
+    final day = this.day.toString().padLeft(2, '0');
+    final year = this.year;
+    return '$month $day, $year';
   }
 }
 
@@ -83,7 +106,7 @@ class _InvoiceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Discount: ${invoice.discount}"),
-              Text("Date: ${invoice.createdDate}"),
+              Text("Date: ${invoice.createdDate!.format}"),
             ],
           )
         ],

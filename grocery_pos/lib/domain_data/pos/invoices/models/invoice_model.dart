@@ -59,8 +59,8 @@ class InvoiceModel extends Equatable {
         id: json[InvoiceModelMapping.idKey],
         createdDate:
             (json[InvoiceModelMapping.createdDateKey] as Timestamp).toDate(),
-        total: json[InvoiceModelMapping.totalKey],
-        discount: json[InvoiceModelMapping.discountKey],
+        total: json[InvoiceModelMapping.totalKey].toDouble(),
+        discount: json[InvoiceModelMapping.discountKey].toDouble(),
         invoiceType:
             InvoiceType.values[json[InvoiceModelMapping.invoiceTypeKey]],
         invoiceDetails: (json[InvoiceModelMapping.invoiceDetailsKey] as List)
@@ -135,6 +135,6 @@ class InvoiceModelMapping {
 
 extension InoiceDetialX on List<InvoiceDetail> {
   double get totalCost =>
-      fold(0, (sum, item) => sum! + item.product.unitPrice * item.quantity) ??
-      0;
+      fold(0.0, (sum, item) => sum! + item.product.unitPrice * item.quantity) ??
+      0.0;
 }

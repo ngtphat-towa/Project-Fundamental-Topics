@@ -19,7 +19,7 @@ class InvoiceDetail extends Equatable {
     return InvoiceDetail(
       product: ProductModel.fromInvoiceDetailJson(
           json[InvoiceDetailMapping.productKey]),
-      quantity: json[InvoiceDetailMapping.quantityKey],
+      quantity: json[InvoiceDetailMapping.quantityKey].toDouble(),
     );
   }
   InvoiceDetail copyWith({
