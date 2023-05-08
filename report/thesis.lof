@@ -16,5 +16,47 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Application Architecture}}{24}{}%
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Decomposition Description}}{25}{}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Entity-Relationship Diagram}}{25}{}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Firestore General}}{26}{}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Firestore: User Collections}}{26}{}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Firestore: Store Profile Collections}}{27}{}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Firestore: Categories Collections}}{27}{}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Firestore: Suppliers Collections}}{28}{}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Firestore: Customers Collections}}{28}{}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Firestore: Products Collections}}{29}{}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Firestore: Invoices Collections}}{29}{}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Detail Design: Login View}}{33}{}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces Detail Design: Sign Up View}}{34}{}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Detail Design: Home View}}{35}{}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Detail Design: Home View Side Menu}}{36}{}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Detail Design: User Profile View}}{37}{}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Detail Design: Store Profile View}}{38}{}%
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Detail Design: Supplier List View}}{39}{}%
+\contentsline {figure}{\numberline {2.19}{\ignorespaces Detail Design: Supplier Entry View}}{40}{}%
+\contentsline {figure}{\numberline {2.20}{\ignorespaces Detail Design: Customer List View}}{41}{}%
+\contentsline {figure}{\numberline {2.21}{\ignorespaces Detail Design: Customer Entry View}}{42}{}%
+\contentsline {figure}{\numberline {2.22}{\ignorespaces Detail Design: Category List View}}{43}{}%
+\contentsline {figure}{\numberline {2.23}{\ignorespaces Detail Design: Category Entry View}}{44}{}%
+\contentsline {figure}{\numberline {2.24}{\ignorespaces Detail Design: Product List View}}{45}{}%
+\contentsline {figure}{\numberline {2.25}{\ignorespaces Detail Design: Product Entry View}}{46}{}%
+\contentsline {figure}{\numberline {2.26}{\ignorespaces Detail Design: Invoice List View}}{47}{}%
+\contentsline {figure}{\numberline {2.27}{\ignorespaces Detail Design: Invoice Entry View}}{48}{}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Implementation: Login View}}{50}{}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Implementation: Sign Up View}}{51}{}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Implementation: Home View}}{52}{}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Implementation: Home View Side Menu}}{53}{}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Implementation: User Profile View}}{54}{}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Implementation: Store Profile View}}{55}{}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Implementation: Supplier List View}}{56}{}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Implementation: Supplier Entry View}}{57}{}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Implementation: Customer List View}}{58}{}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Implementation: Customer Entry View}}{59}{}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Implementation: Category List View}}{60}{}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Implementation: Category Entry View}}{61}{}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Implementation: Product List View}}{62}{}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Implementation: Product Entry View}}{63}{}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Implementation: Invoice List View }}{64}{}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Implementation: Invoice Entry View - First}}{65}{}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Implementation: Invoice Entry View - Second}}{66}{}%
 \addvspace {10\p@ }

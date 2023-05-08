@@ -38,11 +38,40 @@
 \contentsline {subsection}{\numberline {2.1.2}Decomposition Description}{25}{}%
 \contentsline {section}{\numberline {2.2}Data Design}{25}{}%
 \contentsline {subsection}{\numberline {2.2.1}Data Description}{25}{}%
-\contentsline {subsubsection}{\numberline {2.2.1.1}Conceptual Data Model}{25}{}%
-\contentsline {subsubsection}{\numberline {2.2.1.2}Logical Data Model}{25}{}%
-\contentsline {subsubsection}{\numberline {2.2.1.3}Physical Data Model}{25}{}%
-\contentsline {subsection}{\numberline {2.2.2}Data Dictionary}{25}{}%
-\contentsline {section}{\numberline {2.3}Detailed Design}{25}{}%
-\contentsline {chapter}{\numberline {3}Implementation}{26}{}%
-\contentsline {chapter}{\numberline {4}Testing}{27}{}%
-\contentsline {part}{III\hspace {1em}Conclusion}{28}{}%
+\contentsline {subsubsection}{\numberline {2.2.1.1}Entity-Relationship Diagram}{25}{}%
+\contentsline {subsubsection}{\numberline {2.2.1.2}Firebase Database Diagram}{26}{}%
+\contentsline {subsection}{\numberline {2.2.2}Data Dictionary}{30}{}%
+\contentsline {section}{\numberline {2.3}Detailed Design}{33}{}%
+\contentsline {subsection}{\numberline {2.3.1}User Authentication}{33}{}%
+\contentsline {subsubsection}{\numberline {2.3.1.1}Login View}{33}{}%
+\contentsline {subsubsection}{\numberline {2.3.1.2}Sign Up View}{34}{}%
+\contentsline {subsection}{\numberline {2.3.2}Home View}{35}{}%
+\contentsline {subsection}{\numberline {2.3.3}User Profile View}{37}{}%
+\contentsline {subsection}{\numberline {2.3.4}Store Profile View}{38}{}%
+\contentsline {subsection}{\numberline {2.3.5}Contacts}{39}{}%
+\contentsline {subsubsection}{\numberline {2.3.5.1}Supplier View}{39}{}%
+\contentsline {subsubsection}{\numberline {2.3.5.2}Customer View}{41}{}%
+\contentsline {subsection}{\numberline {2.3.6}Inventory View}{43}{}%
+\contentsline {subsubsection}{\numberline {2.3.6.1}Category View}{43}{}%
+\contentsline {subsubsection}{\numberline {2.3.6.2}Product View}{45}{}%
+\contentsline {subsection}{\numberline {2.3.7}Point of Sales}{47}{}%
+\contentsline {chapter}{\numberline {3}Implementation}{49}{}%
+\contentsline {section}{\numberline {3.1}User Authentication}{50}{}%
+\contentsline {subsection}{\numberline {3.1.1}Login View}{50}{}%
+\contentsline {subsection}{\numberline {3.1.2}Sign Up View}{51}{}%
+\contentsline {section}{\numberline {3.2}Home View}{52}{}%
+\contentsline {section}{\numberline {3.3}User Profile View}{54}{}%
+\contentsline {section}{\numberline {3.4}Store Profile View}{55}{}%
+\contentsline {section}{\numberline {3.5}Contacts}{56}{}%
+\contentsline {subsection}{\numberline {3.5.1}Supplier View}{56}{}%
+\contentsline {subsection}{\numberline {3.5.2}Customer View}{58}{}%
+\contentsline {section}{\numberline {3.6}Inventory View}{60}{}%
+\contentsline {subsection}{\numberline {3.6.1}Category View}{60}{}%
+\contentsline {subsection}{\numberline {3.6.2}Product View}{62}{}%
+\contentsline {section}{\numberline {3.7}Point of Sales}{64}{}%
+\contentsline {chapter}{\numberline {4}Testing}{67}{}%
+\contentsline {section}{\numberline {4.1}Introduction}{67}{}%
+\contentsline {subsection}{\numberline {4.1.1}Testing objectives}{67}{}%
+\contentsline {subsection}{\numberline {4.1.2}Testing scope}{67}{}%
+\contentsline {section}{\numberline {4.2}Evaluation of Testing Results}{67}{}%
+\contentsline {part}{III\hspace {1em}Conclusion}{68}{}%
