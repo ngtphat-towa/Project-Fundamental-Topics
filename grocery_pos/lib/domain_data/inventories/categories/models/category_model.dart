@@ -4,7 +4,7 @@ class CategoryModel extends Equatable {
   final String? id;
   final String name;
   final String? description;
-  final String? color;
+  final int? color;
 
   const CategoryModel({
     this.id,
@@ -48,7 +48,7 @@ class CategoryModel extends Equatable {
     String? id,
     String? name,
     String? description,
-    String? color,
+    int? color,
   }) {
     return CategoryModel(
       id: id ?? this.id,

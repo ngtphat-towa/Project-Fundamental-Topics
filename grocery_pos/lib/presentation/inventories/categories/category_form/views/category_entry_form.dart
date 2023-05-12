@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
-import 'package:grocery_pos/presentation/inventories/categories/category_form/bloc/category_form_bloc.dart';
-import 'package:grocery_pos/presentation/inventories/categories/category_list/bloc/category_list_bloc.dart';
+
+import '../../category_list/bloc/category_list_bloc.dart';
+import '../bloc/category_form_bloc.dart';
+import 'category_color_values.dart';
 
 class CategoryEntryForm extends StatefulWidget {
   const CategoryEntryForm({super.key});
@@ -53,8 +56,8 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
   Widget build(BuildContext context) {
     final CategoryFormBloc formBloc =
         BlocProvider.of<CategoryFormBloc>(context);
-    final CategoryListBloc listBloc =
-        BlocProvider.of<CategoryListBloc>(context);
+
+    BlocProvider.of<CategoryListBloc>(context);
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showDiagLogYesNo(context);
@@ -64,7 +67,6 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
         return shouldPop;
       },
       child: Scaffold(
-        // key: _scaffoldKey,
         appBar: AppBar(
           title: const Text("Category Entry"),
         ),
@@ -73,80 +75,28 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
           child: BlocConsumer<CategoryFormBloc, CategoryFormState>(
             listener: (context, state) {
               if (state is CategoryFormSuccessState) {
-                listBloc.add(const LoadCategoryListEvent());
+                BlocProvider.of<CategoryListBloc>(context)
+                    .add(const LoadCategoryListEvent());
                 Navigator.pop(context);
-              } else {}
+              }
             },
             builder: (context, state) {
-              String nameInput = '';
-              String descriptionInput = '';
-              if (state is CategoryFormLoadingState) {
+              if (state is CategoryFormLoaded) {
+                return Form(
+                  child: Column(
+                    children: [
+                      const Text("Category Entry Form"),
+                      _NameInput(),
+                      _DescriptionInput(),
+                      _ColorInput(),
+                      _SummitCategoryButton(),
+                    ],
+                  ),
+                );
+              } else if (state is CategoryFormLoadingState) {
                 return const CircularProgressIndicator();
-              } else {
-                if (state is CategoryFormLoaded) {
-                  return Form(
-                    child: Column(
-                      children: [
-                        const Text("Category Entry Form"),
-                        TextFormField(
-                          initialValue: state.category!.name,
-                          key:
-                              const Key('categoryEntryFrm_nameInput_textField'),
-                          // key: _formKey,
-                          onChanged: (value) {
-                            nameInput = value;
-                          },
-                          decoration: const InputDecoration(
-                            prefixIcon: Icon(Icons.title),
-                            labelText: 'Name',
-                            helperText: '',
-                          ),
-                        ),
-                        TextFormField(
-                          initialValue: state.category!.description,
-                          key: const Key(
-                              'categoryEntryFrm_descriptionInput_textField'),
-                          // key: _formKey,
-
-                          onChanged: (value) {
-                            descriptionInput = value;
-                          },
-                          decoration: const InputDecoration(
-                            prefixIcon: Icon(Icons.description),
-                            labelText: 'Description',
-                            helperText: '',
-                          ),
-                        ),
-                        ElevatedButton(
-                            key: const Key(
-                                'categoryEntryFrm_summitCategory_elevatedButton'),
-                            onPressed: () async {
-                              final categoryModel = CategoryModel(
-                                  name: nameInput,
-                                  description: descriptionInput);
-                              if (state.category! != categoryModel) {
-                                switch (state.type) {
-                                  case CategoryFormType.edit:
-                                    formBloc.add(
-                                        UpdateCategoryEvent(categoryModel));
-                                    break;
-                                  case CategoryFormType.createNew:
-                                    formBloc
-                                        .add(AddCategoryEvent(categoryModel));
-                                    break;
-                                  default:
-                                    break;
-                                }
-                              } else {
-                                Navigator.pop(context);
-                              }
-                            },
-                            child: const Text("Done")),
-                      ],
-                    ),
-                  );
-                }
               }
+
               return Container();
             },
           ),
@@ -156,42 +106,118 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
   }
 }
 
-// class _NameInput extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextField(
-//       key: const Key('categoryEntryFrm_nameInput_textField'),
-//       onChanged: (value) {},
-//       decoration: const InputDecoration(
-//         labelText: 'Name',
-//         helperText: '',
-//       ),
-//     );
-//   }
-// }
+class _ColorInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CategoryFormBloc, CategoryFormState>(
+      builder: (context, state) {
+        final model = state.model ?? CategoryModel.empty;
+        return BlockPicker(
+          key: const Key('categoryEntryFrm_colorInput_textField'),
+          pickerColor:
+              (model.color != null) ? Color(model.color!) : Colors.grey,
+          availableColors: categoryColors,
+          onColorChanged: (Color color) {
+            BlocProvider.of<CategoryFormBloc>(context).add(
+              LoadToEditCategoryEvent(
+                model: model.copyWith(color: color.value),
+                type: state.type,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
 
-// class _DescriptionInput extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextField(
-//       key: const Key('categoryEntryFrm_descriptionInput_textField'),
-//       onChanged: (value) {},
-//       decoration: const InputDecoration(
-//         labelText: 'Description',
-//         helperText: '',
-//       ),
-//     );
-//   }
-// }
+class _NameInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CategoryFormBloc, CategoryFormState>(
+      builder: (context, state) {
+        final model = state.model ?? CategoryModel.empty;
+        return TextFormField(
+          initialValue: model.name,
+          key: const Key('categoryEntryFrm_nameInput_textField'),
+          onChanged: (value) {
+            if (value.isNotEmpty) {
+              BlocProvider.of<CategoryFormBloc>(context).add(
+                LoadToEditCategoryEvent(
+                  model: model.copyWith(name: value),
+                  type: state.type,
+                ),
+              );
+            }
+          },
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.title),
+            labelText: 'Name',
+            helperText: '',
+          ),
+        );
+      },
+    );
+  }
+}
 
-// class _SummitCategoryButton extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//         key: const Key('categoryEntryFrm_summitCategory_elevatedButton'),
-//         onPressed: () {
-//           Navigator.pop(context);
-//         },
-//         child: const Text("Done"));
-//   }
-// }
+class _DescriptionInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CategoryFormBloc, CategoryFormState>(
+      builder: (context, state) {
+        final model = state.model ?? CategoryModel.empty;
+        return TextFormField(
+          initialValue: model.description,
+          key: const Key('categoryEntryFrm_descriptionInput_textField'),
+          onChanged: (value) {
+            if (value.isNotEmpty) {
+              BlocProvider.of<CategoryFormBloc>(context).add(
+                LoadToEditCategoryEvent(
+                  model: model.copyWith(name: value),
+                  type: state.type,
+                ),
+              );
+            }
+          },
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.description),
+            labelText: 'Description',
+            helperText: '',
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SummitCategoryButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CategoryFormBloc, CategoryFormState>(
+      builder: (context, state) {
+        return ElevatedButton(
+            key: const Key('categoryEntryFrm_summitCategory_elevatedButton'),
+            onPressed: () async {
+              //  Try to validate category
+              final categoryModel = state.model!;
+              switch (state.type) {
+                case CategoryFormType.edit:
+                  BlocProvider.of<CategoryFormBloc>(context)
+                      .add(UpdateCategoryEvent(model: categoryModel));
+                  break;
+                case CategoryFormType.createNew:
+                  BlocProvider.of<CategoryFormBloc>(context)
+                      .add(AddCategoryEvent(model: categoryModel));
+                  break;
+                default:
+                  break;
+              }
+              BlocProvider.of<CategoryFormBloc>(context)
+                  .add(BackCategroyFormEvent());
+            },
+            child: const Text("Done"));
+      },
+    );
+  }
+}

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
-import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
+
+import '../../../../../domain_data/inventories/categories/services.dart';
 
 part 'category_list_event.dart';
 part 'category_list_state.dart';
@@ -24,7 +24,7 @@ class CategoryListBloc extends Bloc<CategoryListEvent, CategoryListState> {
     emit(CategoryListLoadingState());
     try {
       final List<CategoryModel>? categoires =
-          await categoryRepository.getAllCategories();
+          event.categories ?? await categoryRepository.getAllCategories();
       if (categoires != null) {
         emit(const CategoryListErrorState("The category list is empty!"));
       }

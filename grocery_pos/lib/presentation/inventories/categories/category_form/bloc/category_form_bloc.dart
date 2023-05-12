@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
@@ -20,26 +21,34 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
 
   Future<void> _updateCategoryEvent(
       UpdateCategoryEvent event, Emitter<CategoryFormState> emit) async {
+    /// Check if model change or not
+    final currentModel =
+        await categoryRepository.getCategoryByID(event.model!.id!);
+    if (event.model! == currentModel) return;
+
+    /// If it was changed
     emit(CategoryFormLoadingState());
     try {
-      await categoryRepository.updateCategory(event.model);
+      await categoryRepository.updateCategory(event.model!);
       emit(const CategoryFormSuccessState(
           successMessage: "Update category succesfully!"));
     } catch (e) {
-      emit(CategoryFormErrorState(message: e.toString()));
+      emit(CategoryFormErrorState(errorMessage: e.toString()));
     }
   }
 
   Future<void> _addCategoryEvent(
       AddCategoryEvent event, Emitter<CategoryFormState> emit) async {
+    /// Check if current model default or not
+    if (event.model! == CategoryModel.empty) return;
     emit(CategoryFormLoadingState());
     try {
       final String newId = await categoryRepository.getNewCategoryID();
-      await categoryRepository.createCategory(event.model.copyWith(id: newId));
+      await categoryRepository.createCategory(event.model!.copyWith(id: newId));
       emit(const CategoryFormSuccessState(
-          successMessage: "Update category succesfully!"));
+          successMessage: "Add category succesfully!"));
     } catch (e) {
-      emit(CategoryFormErrorState(message: e.toString()));
+      emit(CategoryFormErrorState(errorMessage: e.toString()));
     }
   }
 
@@ -47,16 +56,21 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
       LoadToEditCategoryEvent event, Emitter<CategoryFormState> emit) async {
     emit(CategoryFormLoadingState());
     try {
+      final model = event.model;
       if (event.type == CategoryFormType.edit) {
+        /// Load current model from database else assign new value of model
         final latestModel =
-            await categoryRepository.getCategoryByID(event.model.id!);
-        emit(CategoryFormLoaded(latestModel, CategoryFormType.edit));
+            model ?? await categoryRepository.getCategoryByID(event.model!.id!);
+        emit(CategoryFormLoaded(
+            model: latestModel, type: CategoryFormType.edit));
       } else {
-        emit(const CategoryFormLoaded(
-            CategoryModel.empty, CategoryFormType.createNew));
+        emit(CategoryFormLoaded(
+          model: model ?? CategoryModel.empty,
+          type: CategoryFormType.createNew,
+        ));
       }
     } catch (e) {
-      emit(CategoryFormErrorState(message: e.toString()));
+      emit(CategoryFormErrorState(errorMessage: e.toString()));
     }
   }
 

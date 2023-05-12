@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grocery_pos/domain_data/authentications/models/models.dart';
-import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
-import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
+
+import '../../../authentications/models/models.dart';
+import '../../products/models/models.dart';
+import '../models/models.dart';
 
 abstract class ICategoryRepository {
   Future<void> createCategory(CategoryModel model);

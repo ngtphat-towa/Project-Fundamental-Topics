@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
-import 'package:grocery_pos/presentation/inventories/categories/category_form/bloc/category_form_bloc.dart';
-import 'package:grocery_pos/presentation/inventories/categories/category_form/views/category_entry_form.dart';
-import 'package:grocery_pos/presentation/inventories/categories/category_list/bloc/category_list_bloc.dart';
+
+/// Models
+import '../../../../../domain_data/inventories/categories/models/models.dart';
+
+/// Blocs Controllers
+import '../bloc/category_list_bloc.dart';
+import '../../category_form/bloc/category_form_bloc.dart';
+
+/// Form View Page
+import '../../category_form/views/category_entry_form.dart';
 
 class CategoryListForm extends StatefulWidget {
   const CategoryListForm({super.key});
@@ -36,7 +42,7 @@ class _CategoryListFormState extends State<CategoryListForm> {
             itemCount: state.categories!.length,
             itemBuilder: (context, index) {
               final category = state.categories![index];
-              return _CategoryCard(category: category);
+              return _CategoryCard(model: category);
             },
           );
         } else {
@@ -49,41 +55,77 @@ class _CategoryListFormState extends State<CategoryListForm> {
 
 class _CategoryCard extends StatelessWidget {
   const _CategoryCard({
-    required this.category,
+    required this.model,
   });
 
-  final CategoryModel category;
+  final CategoryModel model;
+
+  void _editEvent(BuildContext context) async {
+    // Navigate to form screen to edit category
+    BlocProvider.of<CategoryFormBloc>(context).add(
+      LoadToEditCategoryEvent(
+        model: model,
+        type: CategoryFormType.edit,
+      ),
+    );
+    Navigator.of(context).push(CategoryEntryForm.route(context));
+  }
+
+  Future<bool?> _showDiagLogYesNo(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Do you delete this category?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Yes'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('No'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _deleteEvent(BuildContext context) async {
+    final blocList = BlocProvider.of<CategoryListBloc>(context);
+    final confirmDelete = await _showDiagLogYesNo(context);
+    if (confirmDelete!) {
+      blocList.add(DeleteCategoryEvent(model));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(category.name),
-      subtitle: Text(category.description ?? ''),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              // Navigate to form screen to edit category
-              // Call
-              BlocProvider.of<CategoryFormBloc>(context).add(
-                LoadToEditCategoryEvent(
-                  category,
-                  CategoryFormType.edit,
-                ),
-              );
-              Navigator.of(context).push(CategoryEntryForm.route(context));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              BlocProvider.of<CategoryListBloc>(context)
-                  .add(DeleteCategoryEvent(category));
-            },
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListTile(
+        isThreeLine: true,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        title: Text(
+          model.name,
+          style: DefaultTextStyle.of(context).style.copyWith(
+              color: Color(model.color!), fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(model.description ?? ''),
+        onTap: () => _editEvent(context),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () => _editEvent(context),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => _deleteEvent(context),
+            ),
+          ],
+        ),
       ),
     );
   }
