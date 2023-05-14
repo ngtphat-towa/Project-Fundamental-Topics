@@ -11,8 +11,17 @@ abstract class CategoryFormEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadToEditCategoryEvent extends CategoryFormEvent {
-  const LoadToEditCategoryEvent({
+class LoadCategoryFormEvent extends CategoryFormEvent {
+  const LoadCategoryFormEvent({
+    CategoryModel? model,
+    CategoryFormType? type = CategoryFormType.createNew,
+  }) : super(model: model, type: type);
+  @override
+  List<Object?> get props => [model, type];
+}
+
+class OnChangedCategoryFormEvent extends CategoryFormEvent {
+  const OnChangedCategoryFormEvent({
     CategoryModel? model,
     CategoryFormType? type = CategoryFormType.createNew,
   }) : super(model: model, type: type);

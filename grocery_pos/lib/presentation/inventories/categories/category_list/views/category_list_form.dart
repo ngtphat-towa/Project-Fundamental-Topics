@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// Models
 import '../../../../../domain_data/inventories/categories/models/models.dart';
 
+import '../../../../common/dialog.dart';
+
 /// Blocs Controllers
 import '../bloc/category_list_bloc.dart';
 import '../../category_form/bloc/category_form_bloc.dart';
@@ -31,7 +33,16 @@ class _CategoryListFormState extends State<CategoryListForm> {
     return BlocConsumer<CategoryListBloc, CategoryListState>(
       listener: (context, state) {
         if (state is CategoryListLoadingState) {
-          debugPrint("Loading");
+          debugPrint("Loading State: Category List");
+        } else if (state is CategoryListErrorState) {
+          debugPrint("Error State: Category List");
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(state.message ?? ''),
+              ),
+            );
         }
       },
       builder: (context, state) {
@@ -39,9 +50,9 @@ class _CategoryListFormState extends State<CategoryListForm> {
           return const Center(child: CircularProgressIndicator());
         } else if (state is CategoryListLoadedState) {
           return ListView.builder(
-            itemCount: state.categories!.length,
+            itemCount: state.models!.length,
             itemBuilder: (context, index) {
-              final category = state.categories![index];
+              final category = state.models![index];
               return _CategoryCard(model: category);
             },
           );
@@ -63,7 +74,7 @@ class _CategoryCard extends StatelessWidget {
   void _editEvent(BuildContext context) async {
     // Navigate to form screen to edit category
     BlocProvider.of<CategoryFormBloc>(context).add(
-      LoadToEditCategoryEvent(
+      LoadCategoryFormEvent(
         model: model,
         type: CategoryFormType.edit,
       ),
@@ -71,28 +82,12 @@ class _CategoryCard extends StatelessWidget {
     Navigator.of(context).push(CategoryEntryForm.route(context));
   }
 
-  Future<bool?> _showDiagLogYesNo(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Do you delete this category?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Yes'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('No'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _deleteEvent(BuildContext context) async {
     final blocList = BlocProvider.of<CategoryListBloc>(context);
-    final confirmDelete = await _showDiagLogYesNo(context);
+    final confirmDelete = await showDialogDeleteConfirm(
+      context: context,
+      modelType: "category",
+    );
     if (confirmDelete!) {
       blocList.add(DeleteCategoryEvent(model));
     }
@@ -101,7 +96,7 @@ class _CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(5.0),
       child: ListTile(
         isThreeLine: true,
         shape:

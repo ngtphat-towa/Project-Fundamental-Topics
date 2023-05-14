@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grocery_pos/domain_data/authentications/models/models.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/model/supplier_model.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
 import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
 
 abstract class ISupplierRepository {

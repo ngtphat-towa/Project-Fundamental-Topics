@@ -15,7 +15,8 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
       : super(CategoryFormInitial()) {
     on<AddCategoryEvent>(_addCategoryEvent);
     on<UpdateCategoryEvent>(_updateCategoryEvent);
-    on<LoadToEditCategoryEvent>(_loadToEditCategoryEvent);
+    on<LoadCategoryFormEvent>(_loadToEditCategoryEvent);
+    on<OnChangedCategoryFormEvent>(_onChangedCategoryFormEvent);
     on<BackCategroyFormEvent>(_backCategroyFormEvent);
   }
 
@@ -53,19 +54,18 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
   }
 
   Future<void> _loadToEditCategoryEvent(
-      LoadToEditCategoryEvent event, Emitter<CategoryFormState> emit) async {
+      LoadCategoryFormEvent event, Emitter<CategoryFormState> emit) async {
     emit(CategoryFormLoadingState());
     try {
-      final model = event.model;
       if (event.type == CategoryFormType.edit) {
         /// Load current model from database else assign new value of model
-        final latestModel =
-            model ?? await categoryRepository.getCategoryByID(event.model!.id!);
-        emit(CategoryFormLoaded(
+        final latestModel = event.model ??
+            await categoryRepository.getCategoryByID(event.model!.id!);
+        emit(CategoryFormLoadedState(
             model: latestModel, type: CategoryFormType.edit));
       } else {
-        emit(CategoryFormLoaded(
-          model: model ?? CategoryModel.empty,
+        emit(CategoryFormLoadedState(
+          model: CategoryModel.empty,
           type: CategoryFormType.createNew,
         ));
       }
@@ -78,4 +78,7 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
       BackCategroyFormEvent event, Emitter<CategoryFormState> emit) async {
     emit(CategoryFormInitial());
   }
+
+  Future<void> _onChangedCategoryFormEvent(OnChangedCategoryFormEvent event,
+      Emitter<CategoryFormState> emit) async {}
 }

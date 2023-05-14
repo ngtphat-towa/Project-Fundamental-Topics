@@ -13,13 +13,24 @@ class CategoryFormInitial extends CategoryFormState {}
 
 class CategoryFormLoadingState extends CategoryFormState {}
 
-class CategoryFormLoaded extends CategoryFormState {
-  const CategoryFormLoaded({
+class CategoryFormLoadedState extends CategoryFormState {
+  const CategoryFormLoadedState({
     CategoryModel? model,
     CategoryFormType? type = CategoryFormType.createNew,
   }) : super(model: model, type: type);
   @override
   List<Object?> get props => [model, type];
+}
+
+class CategoryFormValueChanged extends CategoryFormState {
+  final bool? isValid;
+  const CategoryFormValueChanged(
+      {CategoryModel? model,
+      CategoryFormType? type = CategoryFormType.createNew,
+      this.isValid})
+      : super(model: model, type: type);
+  @override
+  List<Object?> get props => [model, type, isValid];
 }
 
 class CategoryFormSuccessState extends CategoryFormState {

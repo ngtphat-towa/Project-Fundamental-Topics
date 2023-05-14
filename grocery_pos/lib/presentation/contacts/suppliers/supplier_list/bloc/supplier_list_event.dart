@@ -15,8 +15,8 @@ class LoadSupplierListEvent extends SupplierListEvent {
 }
 
 class DeleteSupplierListEvent extends SupplierListEvent {
-  final SupplierModel supplier;
-  const DeleteSupplierListEvent({required this.supplier});
+  final SupplierModel model;
+  const DeleteSupplierListEvent({required this.model});
   @override
-  List<Object?> get props => [supplier];
+  List<Object?> get props => [model];
 }

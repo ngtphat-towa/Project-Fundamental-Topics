@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/common/models/models.dart';
+
 import 'package:grocery_pos/common/themes/themes.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/model/supplier_model.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
 
 import 'package:grocery_pos/presentation/contacts/suppliers/supplier_form/bloc/supplier_form_bloc.dart';
 import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/bloc/supplier_list_bloc.dart';
@@ -57,11 +57,14 @@ class _SupplierEntryFormState extends State<SupplierEntryForm> {
         BlocProvider.of<SupplierListBloc>(context);
     return WillPopScope(
       onWillPop: () async {
-        final shouldPop = await showDiagLogYesNo(context);
-        if (shouldPop!) {
-          formBloc.add(BackCategroyFormEvent());
+        if ((formBloc.state is SupplierFormValueChangedState)) {
+          final shouldPop = await showDiagLogYesNo(context);
+          if (shouldPop!) {
+            formBloc.add(BackSupplierFormEvent());
+          }
+          return shouldPop;
         }
-        return shouldPop;
+        return true;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -72,243 +75,355 @@ class _SupplierEntryFormState extends State<SupplierEntryForm> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: BlocConsumer<SupplierFormBloc, SupplierFormState>(
+                child: BlocListener<SupplierFormBloc, SupplierFormState>(
                   listener: (context, state) {
                     if (state is SupplierFormSuccessState) {
                       listBloc.add(const LoadSupplierListEvent());
                       Navigator.pop(context);
                     }
                   },
-                  builder: (context, state) {
-                    if (state is SupplierFormLoadingState) {
-                      return const CircularProgressIndicator();
-                    } else {
-                      if (state is SupplierFormLoadedState) {
-                        //Contact
-                        String id = ((state.supplier!.isEmpty)
-                            ? ''
-                            : state.supplier!.id!);
-                        String nameInput = ((state.supplier!.isEmpty)
-                            ? ''
-                            : state.supplier!.name);
-                        String emailInput = ((state.supplier!.isEmpty)
-                            ? ''
-                            : state.supplier!.email!);
-                        String phoneInput = ((state.supplier!.isEmpty)
-                            ? ''
-                            : state.supplier!.phone!);
-                        String descriptionInput = ((state.supplier!.isEmpty)
-                            ? ''
-                            : state.supplier!.description!);
-                        //Address
-
-                        String streetInput = ((state.supplier!.isEmpty ||
-                                state.supplier!.address == null)
-                            ? ''
-                            : state.supplier!.address!.street!);
-                        String countryInput = ((state.supplier!.isEmpty ||
-                                state.supplier!.address == null)
-                            ? ''
-                            : state.supplier!.address!.country!);
-                        String cityInput = ((state.supplier!.isEmpty ||
-                                state.supplier!.address == null)
-                            ? ''
-                            : state.supplier!.address!.city!);
-
-                        return Form(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              /// Contact Label
-                              Text(
-                                "Contact:",
-                                style:
-                                    AppThemes.textTheme.headlineSmall!.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-
-                              /// Name Feild
-                              TextFormField(
-                                initialValue: nameInput,
-                                key: const Key(
-                                    'supplierEntryFrm_nameInput_textField'),
-                                // key: _formKey,
-                                onChanged: (value) {
-                                  nameInput = value;
-                                },
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.title),
-                                  labelText: 'Name',
-                                  helperText: '',
-                                ),
-                              ),
-
-                              /// Email Feild
-                              TextFormField(
-                                // keyboardType: TextInputType.emailAddress,
-                                initialValue: emailInput,
-                                key: const Key(
-                                    'supplierEntryFrm_emailInput_textField'),
-                                // key: _formKey,
-                                onChanged: (value) {
-                                  emailInput = value;
-                                },
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.email),
-                                  labelText: 'Email',
-                                  helperText: '',
-                                ),
-                              ),
-
-                              /// Phone Feild
-                              TextFormField(
-                                // keyboardType: TextInputType.phone,
-                                initialValue: phoneInput,
-                                key: const Key(
-                                    'supplierEntryFrm_phoneInput_textField'),
-                                // key: _formKey,
-                                onChanged: (value) {
-                                  phoneInput = value;
-                                },
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.phone),
-                                  labelText: 'Phone',
-                                  helperText: '',
-                                ),
-                              ),
-
-                              /// Address Label
-                              Text(
-                                "Address:",
-                                style:
-                                    AppThemes.textTheme.headlineSmall!.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-
-                              /// Street Feild
-                              TextFormField(
-                                initialValue: streetInput,
-                                key: const Key(
-                                    'supplierEntryFrm_streetInput_textField'),
-                                // key: _formKey,
-                                onChanged: (value) {
-                                  streetInput = value;
-                                },
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.streetview),
-                                  labelText: 'Street',
-                                  helperText: '',
-                                ),
-                              ),
-
-                              /// City Feild
-                              TextFormField(
-                                initialValue: cityInput,
-                                key: const Key(
-                                    'supplierEntryFrm_cityInput_textField'),
-                                // key: _formKey,
-                                onChanged: (value) {
-                                  cityInput = value;
-                                },
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.location_city),
-                                  labelText: 'City',
-                                  helperText: '',
-                                ),
-                              ),
-
-                              /// Country Feild
-                              TextFormField(
-                                initialValue: countryInput,
-                                key: const Key(
-                                    'supplierEntryFrm_countryInput_textField'),
-                                // key: _formKey,
-                                onChanged: (value) {
-                                  countryInput = value;
-                                },
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.public),
-                                  labelText: 'Country',
-                                  helperText: '',
-                                ),
-                              ),
-
-                              /// Description Feild
-                              TextFormField(
-                                // keyboardType: TextInputType.multiline,
-                                initialValue: descriptionInput,
-                                key: const Key(
-                                    'supplierEntryFrm_descriptionInput_textField'),
-                                // key: _formKey,
-
-                                onChanged: (value) {
-                                  descriptionInput = value;
-                                },
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.description),
-                                  labelText: 'Description',
-                                  helperText: '',
-                                ),
-                              ),
-
-                              /// Submit Button
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    minimumSize: const Size.fromHeight(45),
-                                  ),
-                                  key: const Key(
-                                      'supplierEntryFrm_summitSupplier_elevatedButton'),
-                                  onPressed: () async {
-                                    final supplierModel = SupplierModel(
-                                      id: id,
-                                      name: nameInput,
-                                      email: emailInput,
-                                      phone: phoneInput,
-                                      address: Address(
-                                        city: cityInput,
-                                        country: countryInput,
-                                        street: streetInput,
-                                      ),
-                                      description: descriptionInput,
-                                    );
-                                    if (state.supplier! != supplierModel) {
-                                      switch (state.type) {
-                                        case SupplierFormType.edit:
-                                          formBloc.add(UpdateSupplierEvent(
-                                              supplierModel));
-                                          break;
-                                        case SupplierFormType.createNew:
-                                          formBloc.add(
-                                              AddSupplierEvent(supplierModel));
-                                          break;
-                                        default:
-                                          break;
-                                      }
-                                    } else {
-                                      Navigator.pop(context);
-                                    }
-                                  },
-                                  child: const Text("Done")),
-                            ],
+                  child: Form(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// Contact Label
+                        Text(
+                          "Contact:",
+                          style: AppThemes.textTheme.headlineSmall!.copyWith(
+                            fontWeight: FontWeight.w700,
                           ),
-                        );
-                      }
-                    }
-                    return Container();
-                  },
+                        ),
+
+                        /// Name Feild
+                        _NameInput(),
+
+                        /// Email Feild
+                        _EmailInput(),
+
+                        /// Phone Feild
+                        _PhoneInput(),
+
+                        /// Address Label
+                        Text(
+                          "Address:",
+                          style: AppThemes.textTheme.headlineSmall!.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+
+                        /// Street Feild
+                        _StreetInput(),
+
+                        /// City Feild
+                        _CityInput(),
+
+                        /// Country Feild
+                        _CountryInput(),
+
+                        /// Description Feild
+                        _DescriptionInput(),
+
+                        /// Submit Button
+                        _SubmitSupplier(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SubmitSupplier extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SupplierFormBloc, SupplierFormState>(
+      buildWhen: (previous, current) =>
+          (current is SupplierFormValueChangedState ||
+              current is LoadSupplierFormEvent),
+      builder: (context, state) {
+        return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              minimumSize: const Size.fromHeight(45),
+            ),
+            key: const Key('supplierEntryFrm_summitSupplier_elevatedButton'),
+            onPressed:
+                (state is SupplierFormValueChangedState && state.isValid!)
+                    ? () async {
+                        final model = state.model!;
+                        switch (state.type) {
+                          case SupplierFormType.edit:
+                            BlocProvider.of<SupplierFormBloc>(context)
+                                .add(UpdateSupplierEvent(model: model));
+                            break;
+                          case SupplierFormType.createNew:
+                            BlocProvider.of<SupplierFormBloc>(context)
+                                .add(AddSupplierEvent(model: model));
+                            break;
+                          default:
+                            break;
+                        }
+                        BlocProvider.of<SupplierFormBloc>(context)
+                            .add(BackSupplierFormEvent());
+                      }
+                    : null,
+            child: const Text("Done"));
+      },
+    );
+  }
+}
+
+class _NameInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SupplierFormBloc, SupplierFormState>(
+      buildWhen: (previous, current) =>
+          (current is SupplierFormValueChangedState &&
+              previous.model?.name != current.model?.name) ||
+          (current is LoadSupplierFormEvent),
+      // previous.model?.name != current.model?.name,
+      builder: (context, state) {
+        final SupplierModel model = state.model!;
+        return TextFormField(
+          initialValue: model.name,
+          key: const Key('supplierEntryFrm_nameInput_textField'),
+          onChanged: (value) {
+            BlocProvider.of<SupplierFormBloc>(context).add(
+              ValueChangedSupplierEvent(
+                model: model.copyWith(name: value),
+                type: state.type,
+              ),
+            );
+          },
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.title),
+            labelText: 'Name',
+            helperText: '',
+            errorText: (model.name.isNotEmpty && !(model.name.length > 3))
+                ? "Name should contain more than 3 characters"
+                : null,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _EmailInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SupplierFormBloc, SupplierFormState>(
+      buildWhen: (previous, current) =>
+          (current is SupplierFormValueChangedState &&
+              previous.model?.email != current.model?.email) ||
+          (current is LoadSupplierFormEvent),
+      // previous.model?.email != current.model?.email,
+      builder: (context, state) {
+        final SupplierModel model = state.model!;
+        return TextFormField(
+          keyboardType: TextInputType.emailAddress,
+          initialValue: model.email,
+          key: const Key('supplierEntryFrm_emailInput_textField'),
+          onChanged: (value) {
+            BlocProvider.of<SupplierFormBloc>(context).add(
+              ValueChangedSupplierEvent(
+                model: model.copyWith(email: value),
+                type: state.type,
+              ),
+            );
+          },
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.email),
+            labelText: 'Email',
+            helperText: '',
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PhoneInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SupplierFormBloc, SupplierFormState>(
+      buildWhen: (previous, current) =>
+          (current is SupplierFormValueChangedState &&
+              previous.model?.phone != current.model?.phone) ||
+          (current is LoadSupplierFormEvent),
+      // previous.model?.phone != current.model?.phone,
+      builder: (context, state) {
+        final SupplierModel model = state.model!;
+        return TextFormField(
+          keyboardType: TextInputType.phone,
+          initialValue: model.phone,
+          key: const Key('supplierEntryFrm_phoneInput_textField'),
+          // key: _formKey,
+          onChanged: (value) {
+            BlocProvider.of<SupplierFormBloc>(context).add(
+              ValueChangedSupplierEvent(
+                model: model.copyWith(phone: value),
+                type: state.type,
+              ),
+            );
+          },
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.phone),
+            labelText: 'Phone',
+            helperText: '',
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _StreetInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SupplierFormBloc, SupplierFormState>(
+      buildWhen: (previous, current) =>
+          (current is SupplierFormValueChangedState &&
+              previous.model?.address?.street !=
+                  current.model?.address?.street) ||
+          (current is LoadSupplierFormEvent),
+      // previous.model?.address?.street != current.model?.address?.street,
+      builder: (context, state) {
+        final SupplierModel model = state.model!;
+        return TextFormField(
+          initialValue: model.address!.street ?? '',
+          key: const Key('supplierEntryFrm_streetInput_textField'),
+          onChanged: (value) {
+            BlocProvider.of<SupplierFormBloc>(context).add(
+              ValueChangedSupplierEvent(
+                model: model.copyWith(
+                  address: model.address!.copyWith(street: value),
+                ),
+                type: state.type,
+              ),
+            );
+          },
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.streetview),
+            labelText: 'Street',
+            helperText: '',
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CityInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SupplierFormBloc, SupplierFormState>(
+      buildWhen: (previous, current) =>
+          (current is SupplierFormValueChangedState &&
+              previous.model?.address?.city != current.model?.address?.city) ||
+          (current is LoadSupplierFormEvent),
+      // previous.model?.address?.city != current.model?.address?.city,
+      builder: (context, state) {
+        final SupplierModel model = state.model!;
+        return TextFormField(
+          initialValue: model.address!.city ?? '',
+          key: const Key('supplierEntryFrm_cityInput_textField'),
+          onChanged: (value) {
+            BlocProvider.of<SupplierFormBloc>(context).add(
+              ValueChangedSupplierEvent(
+                model: model.copyWith(
+                  address: model.address!.copyWith(city: value),
+                ),
+                type: state.type,
+              ),
+            );
+          },
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.location_city),
+            labelText: 'City',
+            helperText: '',
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CountryInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SupplierFormBloc, SupplierFormState>(
+      buildWhen: (previous, current) =>
+          (current is SupplierFormValueChangedState &&
+              previous.model?.address?.country !=
+                  current.model?.address?.country) ||
+          (current is LoadSupplierFormEvent),
+      // previous.model?.address?.country != current.model?.address?.country,
+      builder: (context, state) {
+        final SupplierModel model = state.model!;
+        return TextFormField(
+          initialValue: model.address!.city ?? '',
+          key: const Key('supplierEntryFrm_countryInput_textField'),
+          onChanged: (value) {
+            BlocProvider.of<SupplierFormBloc>(context).add(
+              ValueChangedSupplierEvent(
+                model: model.copyWith(
+                  address: model.address!.copyWith(country: value),
+                ),
+                type: state.type,
+              ),
+            );
+          },
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.public),
+            labelText: 'Country',
+            helperText: '',
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _DescriptionInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SupplierFormBloc, SupplierFormState>(
+      buildWhen: (previous, current) =>
+          (current is SupplierFormValueChangedState &&
+              previous.model?.description != current.model?.description) ||
+          (current is LoadSupplierFormEvent),
+      builder: (context, state) {
+        final SupplierModel model = state.model!;
+        return TextFormField(
+          // keyboardType: TextInputType.multiline,
+          initialValue: model.description,
+          key: const Key('supplierEntryFrm_descriptionInput_textField'),
+          // key: _formKey,
+
+          onChanged: (value) {
+            BlocProvider.of<SupplierFormBloc>(context).add(
+              ValueChangedSupplierEvent(
+                model: model.copyWith(description: value),
+                type: state.type,
+              ),
+            );
+          },
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.description),
+            labelText: 'Description',
+            helperText: '',
+          ),
+        );
+      },
     );
   }
 }

@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/model/supplier_model.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
 
 part 'supplier_form_event.dart';
 part 'supplier_form_state.dart';
@@ -12,54 +14,95 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
       : super(SupplierFormInitial()) {
     on<AddSupplierEvent>(_addSupplierEvent);
     on<UpdateSupplierEvent>(_updateSupplierEvent);
-    on<LoadToEditSupplierEvent>(_loadToEditSupplierEvent);
-    on<BackCategroyFormEvent>(_backCategroyFormEvent);
+    on<LoadSupplierFormEvent>(_loadSupplierFormEvent);
+    on<ValueChangedSupplierEvent>(_valueChangedSupplierEvent);
+    on<BackSupplierFormEvent>(_backSupplierFormEvent);
   }
 
   Future<void> _updateSupplierEvent(
       UpdateSupplierEvent event, Emitter<SupplierFormState> emit) async {
+    final model = event.model;
+    final currentModel =
+        await supplierRepository.getSupplierByID(event.model!.id!);
+    if (model == currentModel) return;
     emit(SupplierFormLoadingState());
+
     try {
-      await supplierRepository.updateSupplier(event.model);
+      await supplierRepository.updateSupplier(event.model!);
       emit(const SupplierFormSuccessState(
           successMessage: "Update supplier succesfully!"));
     } catch (e) {
-      emit(SupplierFormErrorState(message: e.toString()));
+      emit(SupplierFormErrorState(errorMessage: e.toString()));
     }
   }
 
   Future<void> _addSupplierEvent(
       AddSupplierEvent event, Emitter<SupplierFormState> emit) async {
+    if (event.model! == SupplierModel.empty) return;
+
     emit(SupplierFormLoadingState());
     try {
       final String newId = await supplierRepository.getNewSupplierID();
-      await supplierRepository.createSupplier(event.model.copyWith(id: newId));
+      await supplierRepository.createSupplier(event.model!.copyWith(id: newId));
       emit(const SupplierFormSuccessState(
-          successMessage: "Update supplier succesfully!"));
+          successMessage: "Add new supplier succesfully!"));
     } catch (e) {
-      emit(SupplierFormErrorState(message: e.toString()));
+      emit(SupplierFormErrorState(errorMessage: e.toString()));
     }
   }
 
-  Future<void> _loadToEditSupplierEvent(
-      LoadToEditSupplierEvent event, Emitter<SupplierFormState> emit) async {
+  Future<void> _loadSupplierFormEvent(
+      LoadSupplierFormEvent event, Emitter<SupplierFormState> emit) async {
     emit(SupplierFormLoadingState());
+
     try {
       if (event.type == SupplierFormType.edit) {
-        final latestModel =
-            await supplierRepository.getSupplierByID(event.model.id!);
-        emit(SupplierFormLoadedState(latestModel, SupplierFormType.edit));
-      } else {
+        /// check current model changed
+        final latestModel = event.model ??
+            await supplierRepository.getSupplierByID(event.model!.id!);
+
+        /// Reload the UI
         emit(SupplierFormLoadedState(
-            SupplierModel.empty, SupplierFormType.createNew));
+            model: latestModel, type: SupplierFormType.edit));
+      } else if (event.type == SupplierFormType.createNew) {
+        /// Check current model is default or not
+        emit(SupplierFormLoadedState(
+          model: SupplierModel.empty,
+          type: SupplierFormType.createNew,
+        ));
       }
     } catch (e) {
-      emit(SupplierFormErrorState(message: e.toString()));
+      /// Simple catch
+      emit(SupplierFormErrorState(errorMessage: e.toString()));
     }
   }
 
-  Future<void> _backCategroyFormEvent(
-      BackCategroyFormEvent event, Emitter<SupplierFormState> emit) async {
+  Future<void> _backSupplierFormEvent(
+      BackSupplierFormEvent event, Emitter<SupplierFormState> emit) async {
     emit(SupplierFormInitial());
+  }
+
+  Future<void> _valueChangedSupplierEvent(
+      ValueChangedSupplierEvent event, Emitter<SupplierFormState> emit) async {
+    /// check current model changed
+
+    try {
+      final latestModel = event.model;
+      final bool isValid = _validateModel(latestModel!);
+      emit(SupplierFormValueChangedState(
+        model: latestModel,
+        type: event.type,
+        isValid: isValid,
+      ));
+    } catch (e) {
+      /// Simple catch
+      emit(SupplierFormErrorState(errorMessage: e.toString()));
+    }
+  }
+
+  /// TODO: handle validation this form
+  bool _validateModel(SupplierModel model) {
+    if (model.name.isEmpty) return false;
+    return true;
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
 
+import '../../../../../domain_data/inventories/categories/models/models.dart';
 import '../../category_list/bloc/category_list_bloc.dart';
 import '../bloc/category_form_bloc.dart';
 import 'category_color_values.dart';
@@ -30,9 +30,6 @@ class CategoryEntryForm extends StatefulWidget {
 }
 
 class _CategoryEntryFormState extends State<CategoryEntryForm> {
-  // final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  // final _formKey = GlobalKey<FormState>();
   Future<bool?> showDiagLogYesNo(BuildContext context) {
     return showDialog(
       context: context,
@@ -81,7 +78,8 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
               }
             },
             builder: (context, state) {
-              if (state is CategoryFormLoaded) {
+              if (state is CategoryFormLoadedState ||
+                  state is CategoryFormValueChanged) {
                 return Form(
                   child: Column(
                     children: [
@@ -89,7 +87,7 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
                       _NameInput(),
                       _DescriptionInput(),
                       _ColorInput(),
-                      _SummitCategoryButton(),
+                      _SubmitCategoryButton(),
                     ],
                   ),
                 );
@@ -110,6 +108,8 @@ class _ColorInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryFormBloc, CategoryFormState>(
+      buildWhen: (previous, current) =>
+          previous.model?.color != current.model?.color,
       builder: (context, state) {
         final model = state.model ?? CategoryModel.empty;
         return BlockPicker(
@@ -119,7 +119,7 @@ class _ColorInput extends StatelessWidget {
           availableColors: categoryColors,
           onColorChanged: (Color color) {
             BlocProvider.of<CategoryFormBloc>(context).add(
-              LoadToEditCategoryEvent(
+              OnChangedCategoryFormEvent(
                 model: model.copyWith(color: color.value),
                 type: state.type,
               ),
@@ -135,6 +135,8 @@ class _NameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryFormBloc, CategoryFormState>(
+      buildWhen: (previous, current) =>
+          previous.model?.name != current.model?.name,
       builder: (context, state) {
         final model = state.model ?? CategoryModel.empty;
         return TextFormField(
@@ -143,7 +145,7 @@ class _NameInput extends StatelessWidget {
           onChanged: (value) {
             if (value.isNotEmpty) {
               BlocProvider.of<CategoryFormBloc>(context).add(
-                LoadToEditCategoryEvent(
+                OnChangedCategoryFormEvent(
                   model: model.copyWith(name: value),
                   type: state.type,
                 ),
@@ -165,20 +167,20 @@ class _DescriptionInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryFormBloc, CategoryFormState>(
+      buildWhen: (previous, current) =>
+          previous.model?.description != current.model?.description,
       builder: (context, state) {
         final model = state.model ?? CategoryModel.empty;
         return TextFormField(
           initialValue: model.description,
           key: const Key('categoryEntryFrm_descriptionInput_textField'),
           onChanged: (value) {
-            if (value.isNotEmpty) {
-              BlocProvider.of<CategoryFormBloc>(context).add(
-                LoadToEditCategoryEvent(
-                  model: model.copyWith(name: value),
-                  type: state.type,
-                ),
-              );
-            }
+            BlocProvider.of<CategoryFormBloc>(context).add(
+              OnChangedCategoryFormEvent(
+                model: model.copyWith(name: value),
+                type: state.type,
+              ),
+            );
           },
           decoration: const InputDecoration(
             prefixIcon: Icon(Icons.description),
@@ -191,31 +193,36 @@ class _DescriptionInput extends StatelessWidget {
   }
 }
 
-class _SummitCategoryButton extends StatelessWidget {
+class _SubmitCategoryButton extends StatelessWidget {
+  Future _submitEvent(BuildContext context) async {
+    //  Try to validate category
+    final blocForm = BlocProvider.of<CategoryFormBloc>(context);
+
+    final model = blocForm.state.model!;
+    switch (blocForm.state.type) {
+      case CategoryFormType.edit:
+        blocForm.add(UpdateCategoryEvent(model: model));
+        break;
+      case CategoryFormType.createNew:
+        blocForm.add(AddCategoryEvent(model: model));
+        break;
+      default:
+        break;
+    }
+    blocForm.add(BackCategroyFormEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryFormBloc, CategoryFormState>(
+      buildWhen: (previous, current) => previous.model != current.model,
       builder: (context, state) {
         return ElevatedButton(
-            key: const Key('categoryEntryFrm_summitCategory_elevatedButton'),
-            onPressed: () async {
-              //  Try to validate category
-              final categoryModel = state.model!;
-              switch (state.type) {
-                case CategoryFormType.edit:
-                  BlocProvider.of<CategoryFormBloc>(context)
-                      .add(UpdateCategoryEvent(model: categoryModel));
-                  break;
-                case CategoryFormType.createNew:
-                  BlocProvider.of<CategoryFormBloc>(context)
-                      .add(AddCategoryEvent(model: categoryModel));
-                  break;
-                default:
-                  break;
-              }
-              BlocProvider.of<CategoryFormBloc>(context)
-                  .add(BackCategroyFormEvent());
-            },
+            key: const Key('categoryEntryFrm_submitCategory_elevatedButton'),
+            onPressed: () =>
+                (state is CategoryFormValueChanged && state.isValid!)
+                    ? _submitEvent(context)
+                    : null,
             child: const Text("Done"));
       },
     );

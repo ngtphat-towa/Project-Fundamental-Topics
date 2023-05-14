@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/model/supplier_model.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
 
 part 'supplier_list_event.dart';
 part 'supplier_list_state.dart';
@@ -47,7 +47,7 @@ class SupplierListBloc extends Bloc<SupplierListEvent, SupplierListState> {
   Future<void> _deleteSuppliersEvent(
       DeleteSupplierListEvent event, Emitter<SupplierListState> emit) async {
     try {
-      await supplierRepository.deleteSupplier(event.supplier);
+      await supplierRepository.deleteSupplier(event.model);
     } catch (e) {
       emit(SupplierListErrorState(
           message: "Couldn't delete supplier! ${e.toString()}"));

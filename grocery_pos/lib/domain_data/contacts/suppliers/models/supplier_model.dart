@@ -67,9 +67,10 @@ class SupplierModel extends Equatable {
     );
   }
 
-  static get empty => const SupplierModel(
+  static get empty =>  SupplierModel(
         id: '',
         name: '',
+        address: Address.empty
       );
   static get none => const SupplierModel(name: 'none');
 

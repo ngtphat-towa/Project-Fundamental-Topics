@@ -54,8 +54,7 @@ class CategoryPage extends StatelessWidget {
 class _AddCategoryButton extends StatelessWidget {
   void _addEvent(BuildContext context) {
     BlocProvider.of<CategoryFormBloc>(context).add(
-      const LoadToEditCategoryEvent(
-      ),
+      const LoadCategoryFormEvent(),
     );
     Navigator.of(context).push(
       CategoryEntryForm.route(context),

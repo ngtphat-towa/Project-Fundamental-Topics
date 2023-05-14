@@ -1,10 +1,13 @@
 part of 'supplier_form_bloc.dart';
 
 abstract class SupplierFormState extends Equatable {
-  const SupplierFormState();
+  final SupplierModel? model;
+  final SupplierFormType? type;
+  final bool? isValid;
+  const SupplierFormState({this.model, this.type, this.isValid});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [model];
 }
 
 class SupplierFormInitial extends SupplierFormState {}
@@ -12,11 +15,22 @@ class SupplierFormInitial extends SupplierFormState {}
 class SupplierFormLoadingState extends SupplierFormState {}
 
 class SupplierFormLoadedState extends SupplierFormState {
-  final SupplierModel? supplier;
-  final SupplierFormType type;
-  const SupplierFormLoadedState(this.supplier, this.type);
+  const SupplierFormLoadedState({
+    SupplierModel? model,
+    SupplierFormType? type,
+  }) : super(model: model, type: type);
   @override
-  List<Object?> get props => [supplier, type];
+  List<Object?> get props => [model, type];
+}
+
+class SupplierFormValueChangedState extends SupplierFormState {
+  const SupplierFormValueChangedState({
+    SupplierModel? model,
+    SupplierFormType? type,
+    bool? isValid,
+  }) : super(model: model, type: type, isValid: isValid);
+  @override
+  List<Object?> get props => [model, type, isValid];
 }
 
 class SupplierFormSuccessState extends SupplierFormState {
@@ -27,8 +41,8 @@ class SupplierFormSuccessState extends SupplierFormState {
 }
 
 class SupplierFormErrorState extends SupplierFormState {
-  final String? message;
-  const SupplierFormErrorState({this.message});
+  final String? errorMessage;
+  const SupplierFormErrorState({this.errorMessage});
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errorMessage];
 }

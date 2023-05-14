@@ -58,8 +58,8 @@ class CategoryModel extends Equatable {
     );
   }
 
-  static const empty = CategoryModel(id: '', name: '');
-  static const none = CategoryModel(id: '', name: 'none');
+  static get empty => const CategoryModel(id: '', name: '');
+  static get none => const CategoryModel(id: '', name: 'none');
   bool get isEmpty => this == CategoryModel.empty;
   bool get isNotEmpty => this != CategoryModel.empty;
 

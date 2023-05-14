@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/model/supplier_model.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
 
-import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
 import 'package:grocery_pos/presentation/contacts/suppliers/supplier_form/bloc/supplier_form_bloc.dart';
 import 'package:grocery_pos/presentation/contacts/suppliers/supplier_form/views/supplier_entry_form.dart';
 import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/bloc/supplier_list_bloc.dart';
@@ -48,12 +48,19 @@ class _SupplierPageState extends State<SupplierPage> {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: _SearchBar(searchController: _searchController),
+          title: const Text("Supplier List"),
         ),
         floatingActionButton: _AddSupplierButton(),
-        body: const Padding(
-          padding: EdgeInsets.all(10),
-          child: SupplierListForm(),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            child: Column(
+              children: [
+                _SearchBar(searchController: _searchController),
+                const SupplierListForm(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -65,12 +72,9 @@ class _AddSupplierButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       key: const Key("supplierListFrm_addSupplier_elevatedButton"),
-      onPressed: () {
+      onPressed: () async {
         BlocProvider.of<SupplierFormBloc>(context).add(
-          LoadToEditSupplierEvent(
-            SupplierModel.empty,
-            SupplierFormType.createNew,
-          ),
+          const LoadSupplierFormEvent(),
         );
         Navigator.of(context).push(
           SupplierEntryForm.route(context),
@@ -88,28 +92,36 @@ class _SearchBar extends StatelessWidget {
 
   final TextEditingController _searchController;
 
+  Future _searchEvent(BuildContext context) async {
+    BlocProvider.of<SupplierListBloc>(context)
+        .add(LoadSupplierListEvent(searchValue: _searchController.text));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 12),
       child: TextField(
+        key: const Key("supplierListFrm_searchSupplier_textField"),
         controller: _searchController,
         autocorrect: false,
         decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide:
+                  const BorderSide(width: 0.5), // Set border thickness to 0.5
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
             prefixText: "ID:",
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
-              onPressed: () {
-                BlocProvider.of<SupplierListBloc>(context).add(
-                    LoadSupplierListEvent(searchValue: _searchController.text));
-              },
+              onPressed: () async => _searchEvent(context),
             ),
             hintText: "eg.${SupplierModelMapping.idFormat}1",
             labelText: "Search"),
-        onSubmitted: (value) {
-          BlocProvider.of<SupplierListBloc>(context)
-              .add(LoadSupplierListEvent(searchValue: _searchController.text));
-        },
+        onSubmitted: (value) async => _searchEvent(context),
       ),
     );
   }

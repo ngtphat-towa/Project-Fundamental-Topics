@@ -25,10 +25,7 @@ class CategoryListBloc extends Bloc<CategoryListEvent, CategoryListState> {
     try {
       final List<CategoryModel>? categoires =
           event.categories ?? await categoryRepository.getAllCategories();
-      if (categoires != null) {
-        emit(const CategoryListErrorState("The category list is empty!"));
-      }
-      emit(CategoryListLoadedState(categories: categoires));
+      emit(CategoryListLoadedState(models: categoires));
     } catch (e) {
       emit(CategoryListErrorState(e.toString()));
     }
@@ -39,7 +36,7 @@ class CategoryListBloc extends Bloc<CategoryListEvent, CategoryListState> {
     try {
       await categoryRepository.deleteCategory(event.model);
       final categoires = await categoryRepository.getAllCategories();
-      emit(CategoryListLoadedState(categories: categoires));
+      emit(CategoryListLoadedState(models: categoires));
     } catch (e) {
       emit(CategoryListErrorState(e.toString()));
     }

@@ -12,12 +12,12 @@ class CategoryListInitial extends CategoryListState {}
 class CategoryListLoadingState extends CategoryListState {}
 
 class CategoryListLoadedState extends CategoryListState {
-  final List<CategoryModel>? categories;
+  final List<CategoryModel>? models;
 
-  const CategoryListLoadedState({this.categories});
+  const CategoryListLoadedState({this.models});
 
   @override
-  List<Object?> get props => [categories];
+  List<Object?> get props => [models];
 }
 
 class CategoryListErrorState extends CategoryListState {

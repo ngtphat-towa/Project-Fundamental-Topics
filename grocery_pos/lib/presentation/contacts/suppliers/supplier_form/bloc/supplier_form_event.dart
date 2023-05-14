@@ -3,34 +3,44 @@ part of 'supplier_form_bloc.dart';
 enum SupplierFormType { createNew, edit }
 
 abstract class SupplierFormEvent extends Equatable {
-  const SupplierFormEvent();
+  final SupplierModel? model;
+  final SupplierFormType? type;
+
+  const SupplierFormEvent({this.model, this.type});
 
   @override
   List<Object?> get props => [];
 }
 
 class AddSupplierEvent extends SupplierFormEvent {
-  final SupplierModel model;
-
-  const AddSupplierEvent(this.model);
+  const AddSupplierEvent({SupplierModel? model}) : super(model: model);
   @override
   List<Object?> get props => [model];
 }
 
-class LoadToEditSupplierEvent extends SupplierFormEvent {
-  final SupplierModel model;
-  final SupplierFormType type;
-  const LoadToEditSupplierEvent(this.model, this.type);
+class LoadSupplierFormEvent extends SupplierFormEvent {
+  const LoadSupplierFormEvent({
+    SupplierModel? model,
+    SupplierFormType? type = SupplierFormType.createNew,
+  }) : super(model: model, type: type);
   @override
-  List<Object?> get props => [model];
+  List<Object?> get props => [model, type];
+}
+
+class ValueChangedSupplierEvent extends SupplierFormEvent {
+  const ValueChangedSupplierEvent({
+    SupplierModel? model,
+    SupplierFormType? type = SupplierFormType.createNew,
+  }) : super(model: model, type: type);
+  @override
+  List<Object?> get props => [model, type];
 }
 
 class UpdateSupplierEvent extends SupplierFormEvent {
-  final SupplierModel model;
-
-  const UpdateSupplierEvent(this.model);
+  const UpdateSupplierEvent({required SupplierModel model})
+      : super(model: model);
   @override
   List<Object?> get props => [model];
 }
 
-class BackCategroyFormEvent extends SupplierFormEvent {}
+class BackSupplierFormEvent extends SupplierFormEvent {}
