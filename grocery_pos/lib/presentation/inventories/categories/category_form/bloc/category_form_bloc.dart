@@ -79,6 +79,26 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
     emit(CategoryFormInitial());
   }
 
-  Future<void> _onChangedCategoryFormEvent(OnChangedCategoryFormEvent event,
-      Emitter<CategoryFormState> emit) async {}
+  Future<void> _onChangedCategoryFormEvent(
+      OnChangedCategoryFormEvent event, Emitter<CategoryFormState> emit) async {
+    /// check current model changed
+
+    try {
+      final bool isValid = _validateModel(event.model!);
+      emit(CategoryFormValueChanged(
+        model: event.model,
+        type: event.type,
+        isValid: isValid,
+      ));
+    } catch (e) {
+      /// Simple catch
+      emit(CategoryFormErrorState(errorMessage: e.toString()));
+    }
+  }
+
+  /// TODO: handle validation this form
+  bool _validateModel(CategoryModel model) {
+    //if (model.name.isEmpty) return false;
+    return true;
+  }
 }

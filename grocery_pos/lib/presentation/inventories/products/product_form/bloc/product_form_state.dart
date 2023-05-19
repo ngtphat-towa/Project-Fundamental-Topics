@@ -1,44 +1,57 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'product_form_bloc.dart';
 
 abstract class ProductFormState extends Equatable {
-  const ProductFormState();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class ProductFormInitial extends ProductFormState {}
-
-class ProductFormLoadingState extends ProductFormState {
+  final ProductModel? model;
+  final ProductFormType? type;
   final List<CategoryModel>? categories;
   final List<SupplierModel>? suppliers;
 
-  const ProductFormLoadingState({this.categories, this.suppliers});
-}
-
-class ProductFormLoadedState extends ProductFormState {
-  final List<CategoryModel?>? categories;
-  final List<SupplierModel?>? suppliers;
-
-  final ProductModel? product;
-
-  final ProductFormType type;
-  const ProductFormLoadedState({
-    this.product,
-    required this.type,
+  const ProductFormState({
+    this.model,
+    this.type,
     this.categories,
     this.suppliers,
   });
   @override
-  List<Object?> get props => [product, type, categories, suppliers];
+  List<Object?> get props => [model, type, categories, suppliers];
+}
+
+class ProductFormInitial extends ProductFormState {}
+
+class ProductFormLoadingState extends ProductFormState {}
+
+class ProductFormLoadedState extends ProductFormState {
+  const ProductFormLoadedState({
+    ProductModel? model,
+    ProductFormType? type,
+    List<CategoryModel>? categories,
+    List<SupplierModel>? suppliers,
+  }) : super(
+          model: model,
+          type: type,
+          categories: categories,
+          suppliers: suppliers,
+        );
+  @override
+  List<Object?> get props => [model, type, categories, suppliers];
 }
 
 class ProductFormValueChangedState extends ProductFormState {
-  final ProductModel? product;
-
-  const ProductFormValueChangedState(this.product);
+  final bool? isValid;
+  const ProductFormValueChangedState({
+    ProductModel? model,
+    ProductFormType? type,
+    List<CategoryModel>? categories,
+    List<SupplierModel>? suppliers,
+    this.isValid,
+  }) : super(
+            model: model,
+            type: type,
+            categories: categories,
+            suppliers: suppliers);
   @override
-  List<Object?> get props => [product];
+  List<Object?> get props => [model, type, isValid];
 }
 
 class ProductFormSuccessState extends ProductFormState {
@@ -49,8 +62,8 @@ class ProductFormSuccessState extends ProductFormState {
 }
 
 class ProductFormErrorState extends ProductFormState {
-  final String? message;
-  const ProductFormErrorState({this.message});
+  final String? errorMessage;
+  const ProductFormErrorState({this.errorMessage});
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errorMessage];
 }

@@ -3,47 +3,62 @@ part of 'product_form_bloc.dart';
 enum ProductFormType { createNew, edit }
 
 abstract class ProductFormEvent extends Equatable {
-  const ProductFormEvent();
-
+  const ProductFormEvent(
+      {this.model, this.type, this.categories, this.suppliers});
+  final ProductModel? model;
+  final ProductFormType? type;
+  final List<CategoryModel>? categories;
+  final List<SupplierModel>? suppliers;
   @override
   List<Object?> get props => [];
 }
 
 class AddProductEvent extends ProductFormEvent {
-  final ProductModel model;
-
-  const AddProductEvent(this.model);
+  const AddProductEvent({ProductModel? model}) : super(model: model);
   @override
   List<Object?> get props => [model];
 }
 
-class ProductValueChangedEvent extends ProductFormEvent {
-  final ProductModel model;
-
-  const ProductValueChangedEvent(this.model);
+class ValueChangedProductEvent extends ProductFormEvent {
+  const ValueChangedProductEvent({
+    ProductModel? model,
+    ProductFormType? type,
+  }) : super(
+          model: model,
+          type: type,
+        );
   @override
-  List<Object?> get props => [model];
+  List<Object?> get props => [model, type];
 }
 
 class LoadToEditProductEvent extends ProductFormEvent {
-  final ProductModel? model;
-  final ProductFormType type;
-  final List<CategoryModel>? categories;
-  final List<SupplierModel>? suppliers;
-  const LoadToEditProductEvent(
-      {this.model, required this.type, this.categories, this.suppliers});
+  const LoadToEditProductEvent({
+    ProductModel? model,
+    ProductFormType? type = ProductFormType.createNew,
+    List<CategoryModel>? categories,
+    List<SupplierModel>? suppliers,
+  }) : super(
+            model: model,
+            type: type,
+            suppliers: suppliers,
+            categories: categories);
   @override
-  List<Object?> get props => [model, type, categories, suppliers];
+  List<Object?> get props => [model, type, suppliers, categories];
 }
 
-class LoadToDropDownListsEvent extends ProductFormEvent {}
+// class LoadToDropDownListsEvent extends ProductFormEvent {
+//   const LoadToDropDownListsEvent({
+//     List<CategoryModel>? categories,
+//     List<SupplierModel>? suppliers,
+//   });
+//   @override
+//   List<Object?> get props => [categories, suppliers];
+// }
 
 class UpdateProductEvent extends ProductFormEvent {
-  final ProductModel model;
-
-  const UpdateProductEvent(this.model);
+  const UpdateProductEvent({ProductModel? model}) : super(model: model);
   @override
   List<Object?> get props => [model];
 }
 
-class BackCategroyFormEvent extends ProductFormEvent {}
+class BackProductFormEvent extends ProductFormEvent {}

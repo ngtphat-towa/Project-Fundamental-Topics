@@ -5,6 +5,8 @@ import 'package:grocery_pos/presentation/inventories/products/product_form/bloc/
 import 'package:grocery_pos/presentation/inventories/products/product_form/views/product_entry_form.dart';
 import 'package:grocery_pos/presentation/inventories/products/product_list/bloc/product_list_bloc.dart';
 
+import '../../../../common/dialog.dart';
+
 class ProductListForm extends StatefulWidget {
   const ProductListForm({super.key});
 
@@ -40,11 +42,12 @@ class _ProductListFormState extends State<ProductListForm> {
           return const Center(child: CircularProgressIndicator());
         } else if (state is ProductListLoadedState) {
           return ListView.builder(
+            shrinkWrap: true,
             padding: const EdgeInsets.all(15.0),
             itemCount: state.products!.length,
             itemBuilder: (context, index) {
               final product = state.products![index];
-              return _ProductCard(product: product!);
+              return _ProductCard(model: product!);
             },
           );
         } else {
@@ -61,50 +64,69 @@ class _ProductListFormState extends State<ProductListForm> {
 
 class _ProductCard extends StatelessWidget {
   const _ProductCard({
-    required this.product,
+    required this.model,
   });
 
-  final ProductModel product;
+  final ProductModel model;
+
+  Future _editEvent(BuildContext context) async {
+    BlocProvider.of<ProductFormBloc>(context).add(
+      LoadToEditProductEvent(
+        model: model,
+        type: ProductFormType.edit,
+      ),
+    );
+    Navigator.of(context).push(ProductEntryForm.route(context));
+  }
+
+  Future _deleteEvent(BuildContext context) async {
+    final blocList = BlocProvider.of<ProductListBloc>(context);
+    final confirmDelete = await showDialogDeleteConfirm(
+      context: context,
+      modelType: "supplier",
+    );
+    if (confirmDelete!) {
+      blocList.add(DeleteProductListEvent(model: model));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(product.name),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("${product.unitPrice} per ${product.measureUnit}"),
-          Text("${product.id!}-${product.barcode!}")
-        ],
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              // Navigate to form screen to edit product
-              // Call
-              BlocProvider.of<ProductFormBloc>(context).add(
-                LoadToEditProductEvent(
-                  model: product,
-                  type: ProductFormType.edit,
-                ),
-              );
-              Navigator.of(context).push(ProductEntryForm.route(context));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              BlocProvider.of<ProductListBloc>(context)
-                  .add(DeleteProductListEvent(product: product));
-
-              BlocProvider.of<ProductListBloc>(context)
-                  .add(const LoadProductListEvent());
-            },
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ListTile(
+        isThreeLine: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+          side: const BorderSide(width: 0.2),
+        ),
+        title: Text(
+          model.name,
+          style: DefaultTextStyle.of(context)
+              .style
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("${model.unitPrice} per ${model.measureUnit}"),
+            Text("${model.id!}-${model.barcode!}")
+          ],
+        ),
+        onTap: () => _editEvent(context),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () async => _editEvent(context),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async => _deleteEvent(context),
+            ),
+          ],
+        ),
       ),
     );
   }

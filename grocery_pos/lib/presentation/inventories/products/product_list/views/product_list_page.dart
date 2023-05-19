@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
 import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
@@ -63,13 +63,16 @@ class _ProductPageState extends State<ProductPage> {
         ),
       ],
       child: Scaffold(
-        appBar: AppBar(
-          title: _SearchBar(searchController: _searchController),
-        ),
+        appBar: AppBar(title: const Text("Product List")),
         floatingActionButton: _AddProductButton(),
-        body: const Padding(
-          padding: EdgeInsets.all(10),
-          child: ProductListForm(),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+          child: Column(
+            children: [
+              _SearchBar(searchController: _searchController),
+              const ProductListForm(),
+            ],
+          ),
         ),
       ),
     );
@@ -81,7 +84,7 @@ class _AddProductButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       key: const Key("productListFrm_addProduct_elevatedButton"),
-      onPressed: () {
+      onPressed: () async {
         BlocProvider.of<ProductFormBloc>(context).add(
           LoadToEditProductEvent(
             model: ProductModel.empty,
@@ -103,6 +106,10 @@ class _SearchBar extends StatelessWidget {
   }) : _searchController = searchController;
 
   final TextEditingController _searchController;
+  Future _searchEvent(BuildContext context) async {
+    BlocProvider.of<ProductListBloc>(context)
+        .add(LoadProductListEvent(searchValue: _searchController.text));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,20 +119,21 @@ class _SearchBar extends StatelessWidget {
         controller: _searchController,
         autocorrect: false,
         decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide:
+                  const BorderSide(width: 0.5), // Set border thickness to 0.5
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
             prefixText: "ID:",
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
-              onPressed: () {
-                BlocProvider.of<ProductListBloc>(context).add(
-                    LoadProductListEvent(searchValue: _searchController.text));
-              },
+              onPressed: () async => _searchEvent(context),
             ),
             hintText: "eg.${ProductModelMapping.idFormat}1",
             labelText: "Search"),
-        onSubmitted: (value) {
-          BlocProvider.of<ProductListBloc>(context)
-              .add(LoadProductListEvent(searchValue: _searchController.text));
-        },
+        onSubmitted: (value) async => _searchEvent(context),
       ),
     );
   }

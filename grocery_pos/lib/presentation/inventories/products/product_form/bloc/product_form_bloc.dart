@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/model/supplier_model.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
@@ -25,96 +25,119 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     on<AddProductEvent>(_addProductEvent);
     on<UpdateProductEvent>(_updateProductEvent);
     on<LoadToEditProductEvent>(_loadToEditProductEvent);
-    on<BackCategroyFormEvent>(_backCategroyFormEvent);
-    on<LoadToDropDownListsEvent>(_loadToDropDownListsEvent);
-    on<ProductValueChangedEvent>(_productValueChangedEvent);
+    on<BackProductFormEvent>(_backCategroyFormEvent);
+    // on<LoadToDropDownListsEvent>(_loadToDropDownListsEvent);
+    on<ValueChangedProductEvent>(_valueChangedProductEvent);
   }
 
   Future<void> _updateProductEvent(
       UpdateProductEvent event, Emitter<ProductFormState> emit) async {
-    emit(const ProductFormLoadingState());
+    emit(ProductFormLoadingState());
     try {
-      await productRepository.updateProduct(event.model);
+      await productRepository.updateProduct(event.model!);
       emit(const ProductFormSuccessState(
           successMessage: "Update product succesfully!"));
     } catch (e) {
-      emit(ProductFormErrorState(message: e.toString()));
+      emit(ProductFormErrorState(errorMessage: e.toString()));
     }
   }
 
   Future<void> _addProductEvent(
       AddProductEvent event, Emitter<ProductFormState> emit) async {
-    emit(const ProductFormLoadingState());
+    emit(ProductFormLoadingState());
     try {
       final String newId = await productRepository.getNewProductID();
-      await productRepository.createProduct(event.model.copyWith(id: newId));
+      await productRepository.createProduct(event.model!.copyWith(id: newId));
       emit(const ProductFormSuccessState(
-          successMessage: "Update product succesfully!"));
+          successMessage: "Add product succesfully!"));
     } catch (e) {
-      emit(ProductFormErrorState(message: e.toString()));
+      emit(ProductFormErrorState(errorMessage: e.toString()));
     }
   }
 
   Future<void> _loadToEditProductEvent(
       LoadToEditProductEvent event, Emitter<ProductFormState> emit) async {
-    emit(const ProductFormLoadingState());
+    emit(ProductFormLoadingState());
     try {
       List<CategoryModel>? categories = <CategoryModel>[
         CategoryModel.empty,
         ...?(await categoryRepository.getAllCategoryNames()),
       ];
-      List<SupplierModel>? suppliers = [
-        SupplierModel.empty,
+      List<SupplierModel>? suppliers = <SupplierModel>[
+        SupplierModel.emptyName,
         ...?(await supplierRepository.getAllSupplierNames())
       ];
 
       if (event.type == ProductFormType.edit) {
-        final latestModel =
+        final latestModel = event.model ??
             await productRepository.getProductByID(event.model!.id!);
         emit(ProductFormLoadedState(
-            product: latestModel,
+            model: latestModel,
             type: ProductFormType.edit,
             categories: categories,
             suppliers: suppliers));
       } else {
         emit(ProductFormLoadedState(
-            product: ProductModel.empty,
+            model: ProductModel.empty,
             type: ProductFormType.createNew,
             categories: categories,
             suppliers: suppliers));
       }
     } catch (e) {
-      emit(ProductFormErrorState(message: e.toString()));
+      emit(ProductFormErrorState(errorMessage: e.toString()));
     }
   }
 
   Future<void> _backCategroyFormEvent(
-      BackCategroyFormEvent event, Emitter<ProductFormState> emit) async {
+      BackProductFormEvent event, Emitter<ProductFormState> emit) async {
     emit(ProductFormInitial());
   }
 
-  Future<void> _loadToDropDownListsEvent(
-      LoadToDropDownListsEvent event, Emitter<ProductFormState> emit) async {
-    emit(const ProductFormLoadingState());
+  // Future<void> _loadToDropDownListsEvent(
+  //     LoadToDropDownListsEvent event, Emitter<ProductFormState> emit) async {
+  //   emit(const ProductFormLoadingState());
 
+  //   try {
+  //     List<CategoryModel>? categories = <CategoryModel>[
+  //       CategoryModel.empty,
+  //       ...?(await categoryRepository.getAllCategoryNames()),
+  //     ];
+  //     List<SupplierModel>? suppliers = [
+  //       SupplierModel.empty,
+  //       ...?(await supplierRepository.getAllSupplierNames())
+  //     ];
+
+  //     emit(ProductFormLoadingState(
+  //         categories: categories, suppliers: suppliers));
+  //   } catch (e) {
+  //     emit(ProductFormErrorState(
+  //         errorMessage:
+  //             "Cant load category or supplier list: ${e.toString()}"));
+  //   }
+  // }
+
+  Future<void> _valueChangedProductEvent(
+      ValueChangedProductEvent event, Emitter<ProductFormState> emit) async {
     try {
-      final categories = await categoryRepository.getAllCategoryNames();
-      final suppliers = await supplierRepository.getAllSupplierNames();
-      if (categories == null || suppliers == null) {
-        emit(const ProductFormErrorState(
-            message: "Cant load category or supplier list"));
-      } else {
-        emit(ProductFormLoadingState(
-            categories: categories, suppliers: suppliers));
-      }
+      List<CategoryModel>? categories = state.categories;
+      List<SupplierModel>? suppliers = state.suppliers;
+      final bool isValid = _validateModel(event.model!);
+      emit(ProductFormValueChangedState(
+        model: event.model,
+        type: event.type,
+        isValid: isValid,
+        suppliers: suppliers,
+        categories: categories,
+      ));
     } catch (e) {
-      emit(ProductFormErrorState(
-          message: "Cant load category or supplier list: ${e.toString()}"));
+      emit(ProductFormErrorState(errorMessage: e.toString()));
     }
   }
 
-  Future<void> _productValueChangedEvent(
-      ProductValueChangedEvent event, Emitter<ProductFormState> emit) async {
-    emit(ProductFormValueChangedState(event.model));
+  /// TODO: handle validation this form
+
+  bool _validateModel(ProductModel model) {
+    //if (model.name.isEmpty) return false;
+    return true;
   }
 }

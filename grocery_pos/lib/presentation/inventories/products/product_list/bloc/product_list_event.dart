@@ -15,8 +15,8 @@ class LoadProductListEvent extends ProductListEvent {
 }
 
 class DeleteProductListEvent extends ProductListEvent {
-  final ProductModel product;
-  const DeleteProductListEvent({required this.product});
+  final ProductModel model;
+  const DeleteProductListEvent({required this.model});
   @override
-  List<Object?> get props => [product];
+  List<Object?> get props => [model];
 }

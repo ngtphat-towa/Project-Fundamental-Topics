@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-import '../../../../../domain_data/inventories/categories/models/models.dart';
 import '../../category_list/bloc/category_list_bloc.dart';
 import '../bloc/category_form_bloc.dart';
 import 'category_color_values.dart';
@@ -51,12 +50,10 @@ class _CategoryEntryFormState extends State<CategoryEntryForm> {
 
   @override
   Widget build(BuildContext context) {
-    final CategoryFormBloc formBloc =
-        BlocProvider.of<CategoryFormBloc>(context);
-
-    BlocProvider.of<CategoryListBloc>(context);
     return WillPopScope(
       onWillPop: () async {
+        final CategoryFormBloc formBloc =
+            BlocProvider.of<CategoryFormBloc>(context);
         final shouldPop = await showDiagLogYesNo(context);
         if (shouldPop!) {
           formBloc.add(BackCategroyFormEvent());
@@ -111,7 +108,7 @@ class _ColorInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.model?.color != current.model?.color,
       builder: (context, state) {
-        final model = state.model ?? CategoryModel.empty;
+        final model = BlocProvider.of<CategoryFormBloc>(context).state.model!;
         return BlockPicker(
           key: const Key('categoryEntryFrm_colorInput_textField'),
           pickerColor:
@@ -138,7 +135,8 @@ class _NameInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.model?.name != current.model?.name,
       builder: (context, state) {
-        final model = state.model ?? CategoryModel.empty;
+        final model = BlocProvider.of<CategoryFormBloc>(context).state.model!;
+
         return TextFormField(
           initialValue: model.name,
           key: const Key('categoryEntryFrm_nameInput_textField'),
@@ -169,15 +167,16 @@ class _DescriptionInput extends StatelessWidget {
     return BlocBuilder<CategoryFormBloc, CategoryFormState>(
       buildWhen: (previous, current) =>
           previous.model?.description != current.model?.description,
-      builder: (context, state) {
-        final model = state.model ?? CategoryModel.empty;
+      builder: (_, state) {
+        final model = BlocProvider.of<CategoryFormBloc>(context).state.model!;
+
         return TextFormField(
           initialValue: model.description,
           key: const Key('categoryEntryFrm_descriptionInput_textField'),
           onChanged: (value) {
             BlocProvider.of<CategoryFormBloc>(context).add(
               OnChangedCategoryFormEvent(
-                model: model.copyWith(name: value),
+                model: model.copyWith(description: value),
                 type: state.type,
               ),
             );
@@ -215,11 +214,10 @@ class _SubmitCategoryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryFormBloc, CategoryFormState>(
-      buildWhen: (previous, current) => previous.model != current.model,
-      builder: (context, state) {
+      builder: (_, state) {
         return ElevatedButton(
             key: const Key('categoryEntryFrm_submitCategory_elevatedButton'),
-            onPressed: () =>
+            onPressed: () async =>
                 (state is CategoryFormValueChanged && state.isValid!)
                     ? _submitEvent(context)
                     : null,

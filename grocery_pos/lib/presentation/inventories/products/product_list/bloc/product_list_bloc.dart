@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
-import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
+
+import '../../../../../domain_data/inventories/products/services.dart';
 
 part 'product_list_event.dart';
 part 'product_list_state.dart';
@@ -22,6 +22,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
       if (event.searchValue == null || event.searchValue!.isEmpty) {
         products = await productRepository.getAllProducts();
       } else {
+        /// TODO: implement full text search instead of ID search
         final model =
             await productRepository.getProductByID(event.searchValue!);
         if (model == null) {
@@ -30,10 +31,6 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
           products = [model];
         }
       }
-      // if (products == null || products.isEmpty) {
-      //   emit(const ProductListErrorState(
-      //       message: "Couldn't find any products!"));
-      // } else {
       emit(ProductListLoadedState(products: products));
       // }
     } catch (e) {
@@ -44,8 +41,18 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
 
   Future<void> _deleteProductsEvent(
       DeleteProductListEvent event, Emitter<ProductListState> emit) async {
+    final currentProducts = state.products?..remove(event.model);
+    emit(ProductListLoadingState());
     try {
-      await productRepository.deleteProduct(event.product);
+      /// Call Delete in Reposiotry
+      await productRepository.deleteProduct(event.model);
+
+      /// Use previous lists to avoid reloading many times
+      final List<ProductModel?>? products =
+          currentProducts ?? await productRepository.getAllProducts();
+
+      /// Set the new event
+      emit(ProductListLoadedState(products: products));
     } catch (e) {
       emit(ProductListErrorState(
           message: "Couldn't delete product! ${e.toString()}"));

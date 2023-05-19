@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/common/themes/colors.dart';
-import 'package:grocery_pos/domain_data/authentications/models/user_model.dart';
-import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
-import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
-import 'package:grocery_pos/domain_data/store/store_profile_model.dart';
-import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_list/views/customer_list_page.dart';
-import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/views/supplier_list_page.dart';
-import 'package:grocery_pos/presentation/inventories/categories/category_list/views/category_list_page.dart';
-import 'package:grocery_pos/presentation/inventories/products/product_list/views/product_list_page.dart';
-import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
-import 'package:grocery_pos/presentation/invoices/invoice_form/views/invoice_entry_form.dart';
-import 'package:grocery_pos/presentation/invoices/invoice_list/views/invoice_list_page.dart';
-import 'package:grocery_pos/presentation/store_profile/bloc/store_form_bloc.dart';
-import 'package:grocery_pos/presentation/store_profile/views/store_profile_page.dart';
-import 'package:grocery_pos/presentation/user_profile/bloc/user_form_bloc.dart';
-import 'package:grocery_pos/presentation/user_profile/views/user_profile_page.dart';
+
+import '../../../common/themes/colors.dart';
+import '../../../domain_data/authentications/services.dart';
+import '../../../domain_data/pos/invoices/services.dart';
+import '../../../domain_data/store/services.dart';
+import '../../contacts/customers/customer_list/views/customer_list_page.dart';
+import '../../contacts/suppliers/supplier_list/views/supplier_list_page.dart';
+import '../../inventories/categories/category_list/views/category_list_page.dart';
+import '../../inventories/products/product_list/views/product_list_page.dart';
+import '../../invoices/invoice_blocs.dart';
+import '../../invoices/views.dart';
+import '../../store_profile/bloc/store_form_bloc.dart';
+import '../../store_profile/views/store_profile_page.dart';
+import '../../user_profile/bloc/user_form_bloc.dart';
+import '../../user_profile/views/user_profile_page.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
   const CustomNavigationDrawer({

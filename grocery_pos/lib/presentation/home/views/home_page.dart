@@ -1,20 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_repository.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
-import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
-import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
-import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
-import 'package:grocery_pos/domain_data/pos/invoices/repositories/invoice_repository.dart';
-import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
-import 'package:grocery_pos/presentation/home/widgets/custom_drawer.dart';
-import 'package:grocery_pos/presentation/invoices/invoice_form/bloc/invoice_form_bloc.dart';
-import 'package:grocery_pos/presentation/invoices/invoice_form/views/invoice_entry_form.dart';
-import 'package:grocery_pos/presentation/invoices/invoice_list/bloc/invoice_list_bloc.dart';
-import 'package:grocery_pos/presentation/store_profile/bloc/store_form_bloc.dart';
-import 'package:grocery_pos/presentation/user_profile/bloc/user_form_bloc.dart';
+/// Authentication Services
+import '../../../domain_data/authentications/services.dart';
+
+/// Contact Repositoires
+import '../../../domain_data/contacts/customers/repositories/repositories.dart';
+import '../../../domain_data/contacts/suppliers/repositories/repositories.dart';
+
+/// Inventories Repositories
+import '../../../domain_data/inventories/categories/repositories/repositories.dart';
+import '../../../domain_data/inventories/products/repositories/repositories.dart';
+
+/// POS services
+import '../../../domain_data/pos/invoices/services.dart';
+
+/// Invoices Services
+import '../../../domain_data/store/repositories/repositories.dart';
+
+/// Bloc Controllers
+import '../../invoices/invoice_blocs.dart';
+import '../../store_profile/bloc/store_form_bloc.dart';
+import '../../user_profile/bloc/user_form_bloc.dart';
+
+/// Views
+import '../../invoices/invoice_form/views.dart';
+
+/// Widgets
+import '../widgets/custom_drawer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -124,16 +137,16 @@ class HomePageScreen extends StatelessWidget {
         floatingActionButton: _AddInvoiceButton(),
         drawer: const CustomNavigationDrawer(),
         // bottomNavigationBar: _BottomNavigationBar(),
-        body: SingleChildScrollView(
+        body: const SingleChildScrollView(
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ExpansionTile(
-                title: const Text("Menu"),
+                title: Text("Menu"),
                 children: [
                   Wrap(
-                    children: const [
+                    children: [
                       _ScreenMenuButton(
                         iconData: Icons.point_of_sale,
                         title: "POS",
@@ -162,8 +175,8 @@ class HomePageScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
-              const ExpansionTile(
+              SizedBox(height: 30),
+              ExpansionTile(
                 leading: Icon(Icons.receipt_long),
                 title: Text("Recent Invoices"),
                 children: [],
@@ -205,20 +218,6 @@ class _ScreenMenuButton extends StatelessWidget {
   }
 }
 
-// class _BottomNavigationBar extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return BottomNavigationBar(
-//       onTap: (index) {},
-//       items: const [
-//         BottomNavigationBarItem(icon: Icon(Icons.point_of_sale)),
-//         BottomNavigationBarItem(icon: Icon(Icons.inventory)),
-//         BottomNavigationBarItem(icon: Icon(Icons.contacts)),
-//       ],
-//     );
-//   }
-// }
-
 class _AddInvoiceButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -239,18 +238,3 @@ class _AddInvoiceButton extends StatelessWidget {
     );
   }
 }
-
-// class _ToggleScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       key: const Key("homePage_goToScreen_elevatedButton"),
-//       onPressed: () {
-//         Navigator.of(context).push(
-//           InvoicePage.route(context),
-//         );
-//       },
-//       child: const Text("Go to invoice"),
-//     );
-//   }
-// }

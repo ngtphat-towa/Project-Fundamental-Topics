@@ -90,6 +90,7 @@ class _CategoryCard extends StatelessWidget {
     );
     if (confirmDelete!) {
       blocList.add(DeleteCategoryEvent(model));
+      blocList.add(const LoadCategoryListEvent());
     }
   }
 
@@ -99,8 +100,10 @@ class _CategoryCard extends StatelessWidget {
       padding: const EdgeInsets.all(5.0),
       child: ListTile(
         isThreeLine: true,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+          side: const BorderSide(width: 0.2),
+        ),
         title: Text(
           model.name,
           style: DefaultTextStyle.of(context).style.copyWith(
