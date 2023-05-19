@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/authentications/models/user_model.dart';
-import 'package:grocery_pos/domain_data/authentications/repositories/user_repository.dart';
-import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
+
+import '../../../domain_data/authentications/models/models.dart';
+import '../../../domain_data/authentications/repositories/user_repository.dart';
+
 
 part 'user_form_event.dart';
 part 'user_form_state.dart';

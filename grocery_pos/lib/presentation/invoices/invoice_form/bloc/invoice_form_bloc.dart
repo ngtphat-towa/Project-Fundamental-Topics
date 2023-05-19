@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/model/customer_model.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/customers/models/customer_model.dart';
+import 'package:grocery_pos/domain_data/contacts/customers/repositories/customer_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
 import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
 import 'package:grocery_pos/domain_data/pos/invoices/repositories/invoice_repository.dart';

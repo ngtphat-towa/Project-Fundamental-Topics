@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/model/customer_model.dart';
 
-import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_detail_model.dart';
+import '../../../contacts/customers/models/models.dart';
+import 'invoice_detail_model.dart';
 
 enum InvoiceType { retail, customer }
 
@@ -135,6 +135,7 @@ class InvoiceModelMapping {
 
 extension InoiceDetialX on List<InvoiceDetail> {
   double get totalCost =>
-      fold(0.0, (sum, item) => sum! + item.product.unitPrice * item.quantity) ??
+      fold(
+          0.0, (sum, item) => sum! + item.product.unitPrice! * item.quantity) ??
       0.0;
 }

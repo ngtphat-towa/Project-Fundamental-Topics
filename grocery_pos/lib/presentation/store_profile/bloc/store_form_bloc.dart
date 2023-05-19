@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/store/store_profile_model.dart';
-import 'package:grocery_pos/domain_data/store/store_profile_repository.dart';
+import 'package:grocery_pos/domain_data/store/models/store_profile_model.dart';
+import 'package:grocery_pos/domain_data/store/repositories/store_profile_repository.dart';
 
 part 'store_form_event.dart';
 part 'store_form_state.dart';

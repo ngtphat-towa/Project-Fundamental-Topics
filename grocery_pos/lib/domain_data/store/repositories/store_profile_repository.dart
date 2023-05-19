@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grocery_pos/domain_data/authentications/models/user_model.dart';
-import 'package:grocery_pos/domain_data/store/store_profile_model.dart';
+import 'package:grocery_pos/domain_data/store/models/store_profile_model.dart';
 
 abstract class IStoreProfileRepository {
   Future<void> createStoreProfile(StoreProfileModel model);

@@ -1,23 +1,23 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:grocery_pos/domain_data/contacts/suppliers/model/supplier_model.dart';
-import 'package:grocery_pos/domain_data/inventories/categories/models/category_model.dart';
-import 'package:grocery_pos/domain_data/inventories/stocks/models/quantity_model.dart';
+import '../../../contacts/suppliers/models/models.dart';
+import '../../categories/models/models.dart';
+import '../../stocks/models/models.dart';
 
 class ProductModel extends Equatable {
   //required
   final String? id;
   final String name;
   // needs
-  final String measureUnit;
-  final double unitPrice;
+  final String? measureUnit;
+  final double? unitPrice;
   final Quantity? quantity;
   //metadata
   final String? barcode;
   final SupplierModel? supplier;
   final CategoryModel? category;
   final String? photoURL;
-  // final bool? isInventoryEnable;
+  final bool? isInventoryEnable;
 
   const ProductModel({
     this.id,
@@ -29,7 +29,7 @@ class ProductModel extends Equatable {
     this.supplier,
     this.category,
     this.photoURL,
-    // this.isInventoryEnable,
+    this.isInventoryEnable,
   });
 
   Map<String, dynamic> toJson() => {
@@ -42,14 +42,14 @@ class ProductModel extends Equatable {
         ProductModelMapping.supplierKey: supplier?.toProductJson(),
         ProductModelMapping.categoryKey: category?.toProductJson(),
         ProductModelMapping.photoURLKey: photoURL,
-        // ProductModelMapping.isInventoryEnableKey: isInventoryEnable,
+        ProductModelMapping.isInventoryEnableKey: isInventoryEnable,
       };
   Map<String, dynamic> toInvoiceDetailJson() => {
         ProductModelMapping.idKey: id,
         ProductModelMapping.nameKey: name,
         ProductModelMapping.measureUnitKey: measureUnit,
         ProductModelMapping.unitPriceKey: unitPrice,
-        // ProductModelMapping.isInventoryEnableKey: isInventoryEnable,
+        ProductModelMapping.isInventoryEnableKey: isInventoryEnable,
       };
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json[ProductModelMapping.idKey],
@@ -67,7 +67,7 @@ class ProductModel extends Equatable {
                 json[ProductModelMapping.categoryKey])
             : null,
         photoURL: json[ProductModelMapping.photoURLKey],
-        // isInventoryEnable: json[ProductModelMapping.isInventoryEnableKey],
+        isInventoryEnable: json[ProductModelMapping.isInventoryEnableKey],
       );
 
   factory ProductModel.fromInvoiceDetailJson(Map<String, dynamic> json) =>
@@ -89,19 +89,21 @@ class ProductModel extends Equatable {
     CategoryModel? category,
     String? photoURL,
     bool? isInventoryEnable,
-  }) =>
-      ProductModel(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        measureUnit: measureUnit ?? this.measureUnit,
-        unitPrice: unitPrice ?? this.unitPrice,
-        quantity: quantity ?? this.quantity,
-        barcode: barcode ?? this.barcode,
-        supplier: supplier ?? this.supplier,
-        category: category ?? this.category,
-        photoURL: photoURL ?? this.photoURL,
-        // isInventoryEnable: isInventoryEnable ?? this.isInventoryEnable,
-      );
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      measureUnit: measureUnit ?? this.measureUnit,
+      unitPrice: unitPrice ?? this.unitPrice,
+      quantity: quantity ?? this.quantity,
+      barcode: barcode ?? this.barcode,
+      supplier: supplier ?? this.supplier,
+      category: category ?? this.category,
+      photoURL: photoURL ?? this.photoURL,
+      isInventoryEnable: isInventoryEnable ?? this.isInventoryEnable,
+    );
+  }
+
   static get empty => ProductModel(
         id: '',
         name: '',
@@ -112,7 +114,7 @@ class ProductModel extends Equatable {
         supplier: SupplierModel.empty,
         category: CategoryModel.empty,
         photoURL: '',
-        // isInventoryEnable: false,
+        isInventoryEnable: false,
       );
   bool get isEmpty => this == empty;
 
@@ -128,7 +130,7 @@ class ProductModel extends Equatable {
         supplier,
         category,
         photoURL,
-        // isInventoryEnable,
+        isInventoryEnable,
       ];
 }
 
@@ -147,5 +149,5 @@ class ProductModelMapping {
   static const supplierKey = 'supplier';
   static const categoryKey = 'category';
   static const photoURLKey = 'photoURL';
-  // static const isInventoryEnableKey = 'isInventoryEnable';
+  static const isInventoryEnableKey = 'isInventoryEnable';
 }

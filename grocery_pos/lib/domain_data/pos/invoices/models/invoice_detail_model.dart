@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:grocery_pos/domain_data/inventories/products/models/product_model.dart';
+
+import '../../../inventories/products/models/models.dart';
 
 class InvoiceDetail extends Equatable {
   final ProductModel product;

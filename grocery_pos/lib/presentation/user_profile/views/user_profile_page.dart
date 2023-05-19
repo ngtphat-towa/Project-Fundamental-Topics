@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_pos/common/themes/themes.dart';
-import 'package:grocery_pos/domain_data/authentications/repositories/repositories.dart';
-import 'package:grocery_pos/presentation/user_profile/bloc/user_form_bloc.dart';
+
+import '../bloc/user_form_bloc.dart';
+
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});

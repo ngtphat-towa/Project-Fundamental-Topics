@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_pos/common/themes/themes.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/model/customer_model.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/customers/models/customer_model.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
 import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_detail_model.dart';

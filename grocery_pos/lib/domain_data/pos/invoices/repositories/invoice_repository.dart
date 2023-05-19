@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grocery_pos/domain_data/authentications/models/models.dart';
-import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
+
+import '../../../authentications/models/models.dart';
+import '../models/models.dart';
 
 abstract class IInvoiceReposiotry {
   // create new invoice in firestore

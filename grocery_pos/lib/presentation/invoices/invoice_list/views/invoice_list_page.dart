@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_repository.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/repository/supplier_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/customers/repositories/customer_repository.dart';
+import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/categories/repositories/category_repository.dart';
 import 'package:grocery_pos/domain_data/inventories/products/repositories/product_repository.dart';
 import 'package:grocery_pos/domain_data/pos/invoices/models/invoice_model.dart';
@@ -35,18 +35,6 @@ class InvoicePage extends StatefulWidget {
         ],
         child: MultiBlocProvider(
           providers: [
-            // BlocProvider(
-            //   create: (_) => InvoiceListBloc(
-            //     invoiceRepository: invoiceRepository,
-            //   ),
-            // ),
-            // BlocProvider(
-            //   create: (_) => InvoiceFormBloc(
-            //     invoiceRepository: invoiceRepository,
-            //     productRepository: productRepository,
-            //     customerRepository: customerRepository,
-            //   ),
-            // ),
             BlocProvider.value(
                 value: BlocProvider.of<InvoiceListBloc>(context)),
             BlocProvider.value(

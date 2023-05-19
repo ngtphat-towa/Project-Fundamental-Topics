@@ -23,8 +23,7 @@ class Address extends Equatable {
         countryKey: country,
       };
 
-  // ignore: prefer_const_constructors
-  static Address get empty => Address(street: '', city: '', country: '');
+  static Address get empty => const Address(street: '', city: '', country: '');
 
   get full => '$street $city, ${country!}';
 
