@@ -33,6 +33,7 @@ class SupplierModel extends Equatable {
     return SupplierModel(
       id: json[SupplierModelMapping.idKey],
       name: json[SupplierModelMapping.nameKey],
+      address: null,
     );
   }
 
@@ -67,14 +68,12 @@ class SupplierModel extends Equatable {
     );
   }
 
-  static get empty =>  SupplierModel(
-        id: '',
-        name: '',
-        address: Address.empty
-      );
+  static get empty => SupplierModel(id: '', name: '', address: Address.empty);
+  static get emptyName => const SupplierModel(id: '', name: '');
   static get none => const SupplierModel(name: 'none');
 
   bool get isEmpty => this == empty;
+  bool get isEmptyName => this == emptyName;
 
   bool get isNotEmpty => !isEmpty;
   @override

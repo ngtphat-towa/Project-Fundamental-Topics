@@ -35,7 +35,7 @@ class _SupplierListFormState extends State<SupplierListForm> {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(state.message ?? ''),
+                content: Text(state.errorMessage ?? ''),
               ),
             );
         }
@@ -55,7 +55,7 @@ class _SupplierListFormState extends State<SupplierListForm> {
           );
         } else {
           if (state is SupplierListErrorState) {
-            return Center(child: Text(state.message!));
+            return Center(child: Text(state.errorMessage!));
           } else {
             return const Center(child: Text("Coudn't loading suppliers"));
           }
@@ -92,11 +92,8 @@ class _SupplierCard extends StatelessWidget {
     );
     if (confirmDelete!) {
       blocList.add(DeleteSupplierListEvent(model: model));
+      blocList.add(const LoadSupplierListEvent());
     }
-
-    // /// Reload the list
-    // BlocProvider.of<SupplierListBloc>(context)
-    //     .add(const LoadSupplierListEvent());
   }
 
   @override

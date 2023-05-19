@@ -3,34 +3,44 @@ part of 'customer_form_bloc.dart';
 enum CustomerFormType { createNew, edit }
 
 abstract class CustomerFormEvent extends Equatable {
-  const CustomerFormEvent();
+  final CustomerModel? model;
+  final CustomerFormType? type;
+
+  const CustomerFormEvent({this.model, this.type});
 
   @override
   List<Object?> get props => [];
 }
 
 class AddCustomerEvent extends CustomerFormEvent {
-  final CustomerModel model;
-
-  const AddCustomerEvent(this.model);
+  const AddCustomerEvent({CustomerModel? model}) : super(model: model);
   @override
   List<Object?> get props => [model];
 }
 
-class LoadToEditCustomerEvent extends CustomerFormEvent {
-  final CustomerModel model;
-  final CustomerFormType type;
-  const LoadToEditCustomerEvent(this.model, this.type);
+class LoadCustomerFormEvent extends CustomerFormEvent {
+  const LoadCustomerFormEvent({
+    CustomerModel? model,
+    CustomerFormType? type = CustomerFormType.createNew,
+  }) : super(model: model, type: type);
   @override
-  List<Object?> get props => [model];
+  List<Object?> get props => [model, type];
+}
+
+class ValueChangedCustomerEvent extends CustomerFormEvent {
+  const ValueChangedCustomerEvent({
+    CustomerModel? model,
+    CustomerFormType? type = CustomerFormType.createNew,
+  }) : super(model: model, type: type);
+  @override
+  List<Object?> get props => [model, type];
 }
 
 class UpdateCustomerEvent extends CustomerFormEvent {
-  final CustomerModel model;
-
-  const UpdateCustomerEvent(this.model);
+  const UpdateCustomerEvent({required CustomerModel model})
+      : super(model: model);
   @override
   List<Object?> get props => [model];
 }
 
-class BackCategroyFormEvent extends CustomerFormEvent {}
+class BackCustomerFormEvent extends CustomerFormEvent {}

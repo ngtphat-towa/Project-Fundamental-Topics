@@ -1,10 +1,13 @@
 part of 'customer_form_bloc.dart';
 
 abstract class CustomerFormState extends Equatable {
-  const CustomerFormState();
+  final CustomerModel? model;
+  final CustomerFormType? type;
+  final bool? isValid;
+  const CustomerFormState({this.model, this.type, this.isValid});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [model];
 }
 
 class CustomerFormInitial extends CustomerFormState {}
@@ -12,11 +15,22 @@ class CustomerFormInitial extends CustomerFormState {}
 class CustomerFormLoadingState extends CustomerFormState {}
 
 class CustomerFormLoadedState extends CustomerFormState {
-  final CustomerModel? customer;
-  final CustomerFormType type;
-  const CustomerFormLoadedState(this.customer, this.type);
+  const CustomerFormLoadedState({
+    CustomerModel? model,
+    CustomerFormType? type,
+  }) : super(model: model, type: type);
   @override
-  List<Object?> get props => [customer, type];
+  List<Object?> get props => [model, type];
+}
+
+class CustomerFormValueChangedState extends CustomerFormState {
+  const CustomerFormValueChangedState({
+    CustomerModel? model,
+    CustomerFormType? type,
+    bool? isValid,
+  }) : super(model: model, type: type, isValid: isValid);
+  @override
+  List<Object?> get props => [model, type, isValid];
 }
 
 class CustomerFormSuccessState extends CustomerFormState {
@@ -27,8 +41,8 @@ class CustomerFormSuccessState extends CustomerFormState {
 }
 
 class CustomerFormErrorState extends CustomerFormState {
-  final String? message;
-  const CustomerFormErrorState({this.message});
+  final String? errorMessage;
+  const CustomerFormErrorState({this.errorMessage});
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errorMessage];
 }

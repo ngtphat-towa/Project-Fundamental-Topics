@@ -1,7 +1,9 @@
 part of 'supplier_list_bloc.dart';
 
 abstract class SupplierListState extends Equatable {
-  const SupplierListState();
+  final List<SupplierModel?>? suppliers;
+
+  const SupplierListState({this.suppliers});
 
   @override
   List<Object?> get props => [];
@@ -12,19 +14,18 @@ class SupplierListInitial extends SupplierListState {}
 class SupplierListLoadingState extends SupplierListState {}
 
 class SupplierListLoadedState extends SupplierListState {
-  final List<SupplierModel?>? suppliers;
-
-  const SupplierListLoadedState({required this.suppliers});
+  const SupplierListLoadedState({required List<SupplierModel?> suppliers})
+      : super(suppliers: suppliers);
   @override
   List<Object?> get props => [suppliers];
 }
 
 class SupplierListErrorState extends SupplierListState {
-  final String? message;
+  final String? errorMessage;
 
   const SupplierListErrorState({
-    required this.message,
+    required this.errorMessage,
   });
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errorMessage];
 }

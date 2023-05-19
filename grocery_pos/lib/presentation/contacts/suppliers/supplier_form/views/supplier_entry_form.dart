@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grocery_pos/common/themes/themes.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
-
-import 'package:grocery_pos/presentation/contacts/suppliers/supplier_form/bloc/supplier_form_bloc.dart';
-import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/bloc/supplier_list_bloc.dart';
+import '../../../../../common/themes/themes.dart';
+import '../../../../common/dialog.dart';
+import '../../supplier_list/bloc/supplier_list_bloc.dart';
+import '../bloc/supplier_form_bloc.dart';
 
 class SupplierEntryForm extends StatefulWidget {
   const SupplierEntryForm({super.key});
@@ -30,25 +29,6 @@ class SupplierEntryForm extends StatefulWidget {
 }
 
 class _SupplierEntryFormState extends State<SupplierEntryForm> {
-  Future<bool?> showDiagLogYesNo(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Do you want to exit form?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('No'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Yes'),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final SupplierFormBloc formBloc =
@@ -58,7 +38,7 @@ class _SupplierEntryFormState extends State<SupplierEntryForm> {
     return WillPopScope(
       onWillPop: () async {
         if ((formBloc.state is SupplierFormValueChangedState)) {
-          final shouldPop = await showDiagLogYesNo(context);
+          final shouldPop = await showDiagLogExitForm(context);
           if (shouldPop!) {
             formBloc.add(BackSupplierFormEvent());
           }
@@ -75,60 +55,77 @@ class _SupplierEntryFormState extends State<SupplierEntryForm> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: BlocListener<SupplierFormBloc, SupplierFormState>(
-                  listener: (context, state) {
-                    if (state is SupplierFormSuccessState) {
-                      listBloc.add(const LoadSupplierListEvent());
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Form(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// Contact Label
-                        Text(
-                          "Contact:",
-                          style: AppThemes.textTheme.headlineSmall!.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                child: BlocConsumer<SupplierFormBloc, SupplierFormState>(
+                    listener: (context, state) {
+                  if (state is SupplierFormSuccessState) {
+                    listBloc.add(const LoadSupplierListEvent());
+                    Navigator.pop(context);
+                  }
+                  if (state is SupplierFormErrorState) {
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              state.errorMessage ?? 'Submit supplier error!'),
                         ),
-
-                        /// Name Feild
-                        _NameInput(),
-
-                        /// Email Feild
-                        _EmailInput(),
-
-                        /// Phone Feild
-                        _PhoneInput(),
-
-                        /// Address Label
-                        Text(
-                          "Address:",
-                          style: AppThemes.textTheme.headlineSmall!.copyWith(
-                            fontWeight: FontWeight.w700,
+                      );
+                  }
+                }, builder: (context, state) {
+                  if (state is SupplierFormLoadedState ||
+                      state is SupplierFormValueChangedState) {
+                    return Form(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// Contact Label
+                          Text(
+                            "Contact:",
+                            style: AppThemes.textTheme.headlineSmall!.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
 
-                        /// Street Feild
-                        _StreetInput(),
+                          /// Name Feild
+                          _NameInput(),
 
-                        /// City Feild
-                        _CityInput(),
+                          /// Email Feild
+                          _EmailInput(),
 
-                        /// Country Feild
-                        _CountryInput(),
+                          /// Phone Feild
+                          _PhoneInput(),
 
-                        /// Description Feild
-                        _DescriptionInput(),
+                          /// Address Label
+                          Text(
+                            "Address:",
+                            style: AppThemes.textTheme.headlineSmall!.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
 
-                        /// Submit Button
-                        _SubmitSupplier(),
-                      ],
-                    ),
-                  ),
-                ),
+                          /// Street Feild
+                          _StreetInput(),
+
+                          /// City Feild
+                          _CityInput(),
+
+                          /// Country Feild
+                          _CountryInput(),
+
+                          /// Description Feild
+                          _DescriptionInput(),
+
+                          /// Submit Button
+                          _SubmitSupplier(),
+                        ],
+                      ),
+                    );
+                  } else if (state is SupplierFormLoadingState) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  return Container();
+                }),
               ),
             ],
           ),
@@ -139,13 +136,30 @@ class _SupplierEntryFormState extends State<SupplierEntryForm> {
 }
 
 class _SubmitSupplier extends StatelessWidget {
+  Future _submitSupplier(BuildContext context) async {
+    final model = BlocProvider.of<SupplierFormBloc>(context).state.model!;
+    switch (BlocProvider.of<SupplierFormBloc>(context).state.type) {
+      case SupplierFormType.edit:
+        BlocProvider.of<SupplierFormBloc>(context)
+            .add(UpdateSupplierEvent(model: model));
+        break;
+      case SupplierFormType.createNew:
+        BlocProvider.of<SupplierFormBloc>(context)
+            .add(AddSupplierEvent(model: model));
+        break;
+      default:
+        break;
+    }
+    BlocProvider.of<SupplierFormBloc>(context).add(BackSupplierFormEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SupplierFormBloc, SupplierFormState>(
       buildWhen: (previous, current) =>
           (current is SupplierFormValueChangedState ||
               current is LoadSupplierFormEvent),
-      builder: (context, state) {
+      builder: (_, state) {
         return ElevatedButton(
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -155,25 +169,9 @@ class _SubmitSupplier extends StatelessWidget {
               minimumSize: const Size.fromHeight(45),
             ),
             key: const Key('supplierEntryFrm_summitSupplier_elevatedButton'),
-            onPressed:
+            onPressed: () async =>
                 (state is SupplierFormValueChangedState && state.isValid!)
-                    ? () async {
-                        final model = state.model!;
-                        switch (state.type) {
-                          case SupplierFormType.edit:
-                            BlocProvider.of<SupplierFormBloc>(context)
-                                .add(UpdateSupplierEvent(model: model));
-                            break;
-                          case SupplierFormType.createNew:
-                            BlocProvider.of<SupplierFormBloc>(context)
-                                .add(AddSupplierEvent(model: model));
-                            break;
-                          default:
-                            break;
-                        }
-                        BlocProvider.of<SupplierFormBloc>(context)
-                            .add(BackSupplierFormEvent());
-                      }
+                    ? _submitSupplier(context)
                     : null,
             child: const Text("Done"));
       },
@@ -188,10 +186,10 @@ class _NameInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           (current is SupplierFormValueChangedState &&
               previous.model?.name != current.model?.name) ||
-          (current is LoadSupplierFormEvent),
+          (current is SupplierFormLoadedState),
       // previous.model?.name != current.model?.name,
-      builder: (context, state) {
-        final SupplierModel model = state.model!;
+      builder: (_, state) {
+        final model = BlocProvider.of<SupplierFormBloc>(context).state.model!;
         return TextFormField(
           initialValue: model.name,
           key: const Key('supplierEntryFrm_nameInput_textField'),
@@ -224,10 +222,10 @@ class _EmailInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           (current is SupplierFormValueChangedState &&
               previous.model?.email != current.model?.email) ||
-          (current is LoadSupplierFormEvent),
+          (current is SupplierFormLoadedState),
       // previous.model?.email != current.model?.email,
-      builder: (context, state) {
-        final SupplierModel model = state.model!;
+      builder: (_, state) {
+        final model = BlocProvider.of<SupplierFormBloc>(context).state.model!;
         return TextFormField(
           keyboardType: TextInputType.emailAddress,
           initialValue: model.email,
@@ -258,10 +256,10 @@ class _PhoneInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           (current is SupplierFormValueChangedState &&
               previous.model?.phone != current.model?.phone) ||
-          (current is LoadSupplierFormEvent),
+          (current is SupplierFormLoadedState),
       // previous.model?.phone != current.model?.phone,
-      builder: (context, state) {
-        final SupplierModel model = state.model!;
+      builder: (_, state) {
+        final model = BlocProvider.of<SupplierFormBloc>(context).state.model!;
         return TextFormField(
           keyboardType: TextInputType.phone,
           initialValue: model.phone,
@@ -294,10 +292,10 @@ class _StreetInput extends StatelessWidget {
           (current is SupplierFormValueChangedState &&
               previous.model?.address?.street !=
                   current.model?.address?.street) ||
-          (current is LoadSupplierFormEvent),
+          (current is SupplierFormLoadedState),
       // previous.model?.address?.street != current.model?.address?.street,
-      builder: (context, state) {
-        final SupplierModel model = state.model!;
+      builder: (_, state) {
+        final model = BlocProvider.of<SupplierFormBloc>(context).state.model!;
         return TextFormField(
           initialValue: model.address!.street ?? '',
           key: const Key('supplierEntryFrm_streetInput_textField'),
@@ -329,10 +327,10 @@ class _CityInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           (current is SupplierFormValueChangedState &&
               previous.model?.address?.city != current.model?.address?.city) ||
-          (current is LoadSupplierFormEvent),
+          (current is SupplierFormLoadedState),
       // previous.model?.address?.city != current.model?.address?.city,
-      builder: (context, state) {
-        final SupplierModel model = state.model!;
+      builder: (_, state) {
+        final model = BlocProvider.of<SupplierFormBloc>(context).state.model!;
         return TextFormField(
           initialValue: model.address!.city ?? '',
           key: const Key('supplierEntryFrm_cityInput_textField'),
@@ -365,12 +363,12 @@ class _CountryInput extends StatelessWidget {
           (current is SupplierFormValueChangedState &&
               previous.model?.address?.country !=
                   current.model?.address?.country) ||
-          (current is LoadSupplierFormEvent),
+          (current is SupplierFormLoadedState),
       // previous.model?.address?.country != current.model?.address?.country,
-      builder: (context, state) {
-        final SupplierModel model = state.model!;
+      builder: (_, state) {
+        final model = BlocProvider.of<SupplierFormBloc>(context).state.model!;
         return TextFormField(
-          initialValue: model.address!.city ?? '',
+          initialValue: model.address!.country ?? '',
           key: const Key('supplierEntryFrm_countryInput_textField'),
           onChanged: (value) {
             BlocProvider.of<SupplierFormBloc>(context).add(
@@ -400,9 +398,9 @@ class _DescriptionInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           (current is SupplierFormValueChangedState &&
               previous.model?.description != current.model?.description) ||
-          (current is LoadSupplierFormEvent),
-      builder: (context, state) {
-        final SupplierModel model = state.model!;
+          (current is SupplierFormLoadedState),
+      builder: (_, state) {
+        final model = BlocProvider.of<SupplierFormBloc>(context).state.model!;
         return TextFormField(
           // keyboardType: TextInputType.multiline,
           initialValue: model.description,

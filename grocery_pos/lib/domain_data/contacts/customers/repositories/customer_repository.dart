@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grocery_pos/domain_data/authentications/models/models.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/model/customer_model.dart';
+import 'package:grocery_pos/domain_data/contacts/customers/models/customer_model.dart';
 
 abstract class ICustomerRepository {
   Future<void> createCustomer(CustomerModel model) async {}

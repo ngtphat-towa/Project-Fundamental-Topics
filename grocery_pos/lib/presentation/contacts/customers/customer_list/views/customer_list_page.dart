@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/model/customer_model.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_repository.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_form/bloc/customer_form_bloc.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_form/views/customer_entry_form.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_list/bloc/customer_list_bloc.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_list/views/customer_list_form.dart';
+
+import '../../../../../domain_data/contacts/customers/services.dart';
+import '../../customer_form/bloc/customer_form_bloc.dart';
+import '../../customer_form/views/customer_entry_form.dart';
+import '../bloc/customer_list_bloc.dart';
+import 'customer_list_form.dart';
 
 class CustomerPage extends StatefulWidget {
   const CustomerPage({super.key});
@@ -46,12 +46,19 @@ class _CustomerPageState extends State<CustomerPage> {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: _SearchBar(searchController: _searchController),
+          title: const Text("Customer List"),
         ),
         floatingActionButton: _AddCustomerButton(),
-        body: const Padding(
-          padding: EdgeInsets.all(10),
-          child: CustomerListForm(),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            child: Column(
+              children: [
+                _SearchBar(searchController: _searchController),
+                const CustomerListForm(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -63,12 +70,9 @@ class _AddCustomerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       key: const Key("customerListFrm_addCustomer_elevatedButton"),
-      onPressed: () {
+      onPressed: () async {
         BlocProvider.of<CustomerFormBloc>(context).add(
-          LoadToEditCustomerEvent(
-            CustomerModel.empty,
-            CustomerFormType.createNew,
-          ),
+          const LoadCustomerFormEvent(),
         );
         Navigator.of(context).push(
           CustomerEntryForm.route(context),
@@ -86,28 +90,36 @@ class _SearchBar extends StatelessWidget {
 
   final TextEditingController _searchController;
 
+  Future _searchEvent(BuildContext context) async {
+    BlocProvider.of<CustomerListBloc>(context)
+        .add(LoadCustomerListEvent(searchValue: _searchController.text));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 12),
       child: TextField(
+        key: const Key("customerListFrm_searchCustomer_textField"),
         controller: _searchController,
         autocorrect: false,
         decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide:
+                  const BorderSide(width: 0.5), // Set border thickness to 0.5
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
             prefixText: "ID:",
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
-              onPressed: () {
-                BlocProvider.of<CustomerListBloc>(context).add(
-                    LoadCustomerListEvent(searchValue: _searchController.text));
-              },
+              onPressed: () async => _searchEvent(context),
             ),
             hintText: "eg.${CustomerModelMapping.idFormat}1",
             labelText: "Search"),
-        onSubmitted: (value) {
-          BlocProvider.of<CustomerListBloc>(context)
-              .add(LoadCustomerListEvent(searchValue: _searchController.text));
-        },
+        onSubmitted: (value) async => _searchEvent(context),
       ),
     );
   }

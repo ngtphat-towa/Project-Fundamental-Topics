@@ -1,9 +1,13 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/model/customer_model.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_form/bloc/customer_form_bloc.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_form/views/customer_entry_form.dart';
-import 'package:grocery_pos/presentation/contacts/customers/customer_list/bloc/customer_list_bloc.dart';
+
+import '../../../../../domain_data/contacts/customers/models/models.dart';
+import '../../../../common/dialog.dart';
+import '../../customer_form/bloc/customer_form_bloc.dart';
+import '../../customer_form/views/customer_entry_form.dart';
+import '../bloc/customer_list_bloc.dart';
 
 class CustomerListForm extends StatefulWidget {
   const CustomerListForm({super.key});
@@ -26,12 +30,12 @@ class _CustomerListFormState extends State<CustomerListForm> {
     return BlocConsumer<CustomerListBloc, CustomerListState>(
       listener: (context, state) {
         if (state is CustomerListErrorState) {
-          debugPrint("Loading");
+          debugPrint("Error State: Customer Form ");
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(state.message ?? ''),
+                content: Text(state.errorMessage ?? ''),
               ),
             );
         }
@@ -41,16 +45,17 @@ class _CustomerListFormState extends State<CustomerListForm> {
           return const Center(child: CircularProgressIndicator());
         } else if (state is CustomerListLoadedState) {
           return ListView.builder(
+            shrinkWrap: true,
             padding: const EdgeInsets.all(15.0),
             itemCount: state.customers!.length,
             itemBuilder: (context, index) {
               final customer = state.customers![index];
-              return _CustomerCard(customer: customer!);
+              return _CustomerCard(model: customer!);
             },
           );
         } else {
           if (state is CustomerListErrorState) {
-            return Center(child: Text(state.message!));
+            return Center(child: Text(state.errorMessage!));
           } else {
             return const Center(child: Text("Coudn't loading customers"));
           }
@@ -62,50 +67,72 @@ class _CustomerListFormState extends State<CustomerListForm> {
 
 class _CustomerCard extends StatelessWidget {
   const _CustomerCard({
-    required this.customer,
+    required this.model,
   });
 
-  final CustomerModel customer;
+  final CustomerModel model;
+
+  Future _editEvent(BuildContext context) async {
+    // Navigate to form screen to edit customer
+    // Call
+    BlocProvider.of<CustomerFormBloc>(context).add(
+      LoadCustomerFormEvent(
+        model: model,
+        type: CustomerFormType.edit,
+      ),
+    );
+    Navigator.of(context).push(CustomerEntryForm.route(context));
+  }
+
+  Future _deleteEvent(BuildContext context) async {
+    final blocList = BlocProvider.of<CustomerListBloc>(context);
+    final confirmDelete = await showDialogDeleteConfirm(
+      context: context,
+      modelType: "customer",
+    );
+    if (confirmDelete!) {
+      blocList.add(DeleteCustomerListEvent(model: model));
+      blocList.add(const LoadCustomerListEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(customer.name),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("${customer.id}-${customer.address!.full}"),
-          Text(customer.phone ?? '')
-        ],
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              // Navigate to form screen to edit customer
-              // Call
-              BlocProvider.of<CustomerFormBloc>(context).add(
-                LoadToEditCustomerEvent(
-                  customer,
-                  CustomerFormType.edit,
-                ),
-              );
-              Navigator.of(context).push(CustomerEntryForm.route(context));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              BlocProvider.of<CustomerListBloc>(context)
-                  .add(DeleteCustomerListEvent(customer: customer));
-
-              BlocProvider.of<CustomerListBloc>(context)
-                  .add(const LoadCustomerListEvent());
-            },
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ListTile(
+        isThreeLine: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+          side: const BorderSide(width: 0.2),
+        ),
+        title: Text(
+          model.name,
+          style: DefaultTextStyle.of(context)
+              .style
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("${model.id}-${model.address!.full}"),
+            Text(model.phone ?? '')
+          ],
+        ),
+        onTap: () => _editEvent(context),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () async => _editEvent(context),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async => _deleteEvent(context),
+            ),
+          ],
+        ),
       ),
     );
   }

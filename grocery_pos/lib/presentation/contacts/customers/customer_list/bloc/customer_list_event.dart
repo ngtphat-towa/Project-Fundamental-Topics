@@ -15,8 +15,8 @@ class LoadCustomerListEvent extends CustomerListEvent {
 }
 
 class DeleteCustomerListEvent extends CustomerListEvent {
-  final CustomerModel customer;
-  const DeleteCustomerListEvent({required this.customer});
+  final CustomerModel model;
+  const DeleteCustomerListEvent({required this.model});
   @override
-  List<Object?> get props => [customer];
+  List<Object?> get props => [model];
 }

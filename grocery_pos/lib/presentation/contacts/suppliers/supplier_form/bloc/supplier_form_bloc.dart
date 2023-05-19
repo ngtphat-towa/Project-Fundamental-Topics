@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
+
+import '../../../../../domain_data/contacts/suppliers/services.dart';
 
 part 'supplier_form_event.dart';
 part 'supplier_form_state.dart';
@@ -87,10 +87,9 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
     /// check current model changed
 
     try {
-      final latestModel = event.model;
-      final bool isValid = _validateModel(latestModel!);
+      final bool isValid = _validateModel(event.model!);
       emit(SupplierFormValueChangedState(
-        model: latestModel,
+        model: event.model,
         type: event.type,
         isValid: isValid,
       ));
@@ -102,7 +101,7 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
 
   /// TODO: handle validation this form
   bool _validateModel(SupplierModel model) {
-    if (model.name.isEmpty) return false;
+    // //if (model.name.isEmpty) return false;
     return true;
   }
 }

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/suppliers/models/supplier_model.dart';
 
-import 'package:grocery_pos/domain_data/contacts/suppliers/repositories/supplier_repository.dart';
-import 'package:grocery_pos/presentation/contacts/suppliers/supplier_form/bloc/supplier_form_bloc.dart';
-import 'package:grocery_pos/presentation/contacts/suppliers/supplier_form/views/supplier_entry_form.dart';
-import 'package:grocery_pos/presentation/contacts/suppliers/supplier_list/bloc/supplier_list_bloc.dart';
-
+import '../../../../../domain_data/contacts/suppliers/services.dart';
+import '../../supplier_form/bloc/supplier_form_bloc.dart';
+import '../../supplier_form/views/supplier_entry_form.dart';
+import '../bloc/supplier_list_bloc.dart';
 import 'supplier_list_form.dart';
 
 class SupplierPage extends StatefulWidget {

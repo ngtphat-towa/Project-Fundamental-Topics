@@ -1,7 +1,9 @@
 part of 'customer_list_bloc.dart';
 
 abstract class CustomerListState extends Equatable {
-  const CustomerListState();
+  final List<CustomerModel?>? customers;
+
+  const CustomerListState({this.customers});
 
   @override
   List<Object?> get props => [];
@@ -12,19 +14,18 @@ class CustomerListInitial extends CustomerListState {}
 class CustomerListLoadingState extends CustomerListState {}
 
 class CustomerListLoadedState extends CustomerListState {
-  final List<CustomerModel?>? customers;
-
-  const CustomerListLoadedState({required this.customers});
+  const CustomerListLoadedState({required List<CustomerModel?> customers})
+      : super(customers: customers);
   @override
   List<Object?> get props => [customers];
 }
 
 class CustomerListErrorState extends CustomerListState {
-  final String? message;
+  final String? errorMessage;
 
   const CustomerListErrorState({
-    required this.message,
+    required this.errorMessage,
   });
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errorMessage];
 }

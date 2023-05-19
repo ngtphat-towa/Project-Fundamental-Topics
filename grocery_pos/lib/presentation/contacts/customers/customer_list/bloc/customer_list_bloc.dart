@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/model/customer_model.dart';
-import 'package:grocery_pos/domain_data/contacts/customers/repository/customer_repository.dart';
-import 'dart:async';
+
+import '../../../../../domain_data/contacts/customers/services.dart';
 
 part 'customer_list_event.dart';
 part 'customer_list_state.dart';
@@ -33,23 +34,23 @@ class CustomerListBloc extends Bloc<CustomerListEvent, CustomerListState> {
       }
       if (customers == null || customers.isEmpty) {
         emit(const CustomerListErrorState(
-            message: "Couldn't find any customers!"));
+            errorMessage: "Couldn't find any customers!"));
       } else {
         emit(CustomerListLoadedState(customers: customers));
       }
     } catch (e) {
       emit(CustomerListErrorState(
-          message: "Couldn't find any customers! ${e.toString()}"));
+          errorMessage: "Couldn't find any customers! ${e.toString()}"));
     }
   }
 
   Future<void> _deleteCustomersEvent(
       DeleteCustomerListEvent event, Emitter<CustomerListState> emit) async {
     try {
-      await customerRepository.deleteCustomer(event.customer);
+      await customerRepository.deleteCustomer(event.model);
     } catch (e) {
       emit(CustomerListErrorState(
-          message: "Couldn't delete customer! ${e.toString()}"));
+          errorMessage: "Couldn't delete customer! ${e.toString()}"));
     }
   }
 }

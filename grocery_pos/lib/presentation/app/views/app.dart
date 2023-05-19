@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_pos/common/themes/colors.dart';
-import 'package:grocery_pos/common/themes/themes.dart';
-import 'package:grocery_pos/domain_data/authentications/repositories/authentication_repository.dart';
-import 'package:grocery_pos/presentation/app/bloc/app_bloc.dart';
-import 'package:grocery_pos/presentation/authentication/login/views/login_page.dart';
-import 'package:grocery_pos/presentation/home/views/views.dart';
+
+import '../../../domain_data/authentications/repositories/repositories.dart';
+import '../../authentication/login/views/views.dart';
+import '../../home/views/views.dart';
+import '../bloc/app_bloc.dart';
 
 class App extends StatelessWidget {
   final AuthenticationRepository _authenticationRepository;
@@ -25,17 +24,19 @@ class App extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-              textTheme: AppThemes.textTheme,
-              appBarTheme: AppBarTheme(
-                elevation: 0,
-                centerTitle: true,
-                titleTextStyle: AppThemes.textTheme.headlineSmall,
-                foregroundColor: AppColors.contextColor,
-              ),
-              buttonTheme: ButtonThemeData(
-                colorScheme: AppThemes.colorScheme,
-                textTheme: ButtonTextTheme.accent,
-              )),
+            useMaterial3: true,
+            // textTheme: AppThemes.textTheme,
+            // appBarTheme: AppBarTheme(
+            //   elevation: 0,
+            //   centerTitle: true,
+            //   titleTextStyle: AppThemes.textTheme.headlineSmall,
+            //   foregroundColor: AppColors.contextColor,
+            // ),
+            // buttonTheme: ButtonThemeData(
+            //   colorScheme: AppThemes.colorScheme,
+            //   textTheme: ButtonTextTheme.accent,
+            // ),
+          ),
           home: const AuthenticationWrapper(),
         ),
       ),
