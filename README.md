@@ -1,5 +1,5 @@
 # CT216H - Project - Fundamental Topics
-### Topic: ROCERY MANAGEMENT APLICATION GROCERYPOS
+### Topic: GROCERY MANAGEMENT APLICATION GROCERYPOS
 * Author: Nguyen Thanh Phat Year code: K46
 * Instructor: Dr. Lam Nhut Khang
 ### Stacks: Flutter, Bloc and Firebase
